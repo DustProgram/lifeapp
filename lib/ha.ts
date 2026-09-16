@@ -87,10 +87,36 @@ async function verifySupervisorAuth(
   }
 }
 
-/** Channel 2: HA core login_flow (the official mobile-app login API). */
+/** Échange le code d'autorisation contre un token pour prouver qu'il est réel. */
+async function exchangeAuthCode(
+  haUrl: string,
+  clientId: string,
+  code: string
+): Promise<HaLoginResult> {
+  const tokenRes = await fetch(`${haUrl}/auth/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "authorization_code",
+      code,
+      client_id: clientId,
+    }),
+    signal: AbortSignal.timeout(10000),
+  });
+  console.log(`[lifeos-auth] login_flow token -> HTTP ${tokenRes.status}`);
+  return tokenRes.ok
+    ? { ok: true }
+    : { ok: false, reason: "invalid_credentials", detail: `token ${tokenRes.status}` };
+}
+
+/**
+ * Channel 2: HA core login_flow (the official mobile-app login API).
+ * `mfaCode` completes the TOTP step for accounts with two-factor auth.
+ */
 async function verifyLoginFlow(
   username: string,
-  password: string
+  password: string,
+  mfaCode?: string
 ): Promise<HaLoginResult> {
   const haUrl = process.env.HA_URL?.replace(/\/+$/, "");
   if (!haUrl) return { ok: false, reason: "not_configured" };
@@ -136,24 +162,35 @@ async function verifyLoginFlow(
     };
 
     if (step.type === "create_entry" && step.result) {
-      // Exchange the code so we know it is genuine, then drop the tokens.
-      const tokenRes = await fetch(`${haUrl}/auth/token`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          grant_type: "authorization_code",
-          code: step.result,
-          client_id: clientId,
-        }),
-        signal: AbortSignal.timeout(10000),
-      });
-      console.log(`[lifeos-auth] login_flow token -> HTTP ${tokenRes.status}`);
-      return tokenRes.ok
-        ? { ok: true }
-        : { ok: false, reason: "invalid_credentials", detail: `token ${tokenRes.status}` };
+      return exchangeAuthCode(haUrl, clientId, step.result);
     }
 
-    if (step.step_id === "mfa") return { ok: false, reason: "mfa_required" };
+    if (step.step_id === "mfa") {
+      if (!mfaCode) return { ok: false, reason: "mfa_required" };
+      // Étape TOTP : on soumet le code dans le même flow.
+      const mfaRes = await fetch(`${haUrl}/auth/login_flow/${flow.flow_id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ client_id: clientId, code: mfaCode }),
+        signal: AbortSignal.timeout(10000),
+      });
+      console.log(`[lifeos-auth] login_flow mfa -> HTTP ${mfaRes.status}`);
+      if (!mfaRes.ok) {
+        return { ok: false, reason: "invalid_credentials", detail: `mfa ${mfaRes.status}` };
+      }
+      const mfaStep = (await mfaRes.json()) as {
+        type?: string;
+        result?: string;
+        errors?: Record<string, string>;
+      };
+      if (mfaStep.type === "create_entry" && mfaStep.result) {
+        return exchangeAuthCode(haUrl, clientId, mfaStep.result);
+      }
+      console.log(
+        `[lifeos-auth] login_flow code MFA refusé : ${JSON.stringify(mfaStep.errors ?? mfaStep.type)}`
+      );
+      return { ok: false, reason: "invalid_credentials", detail: "code MFA refusé" };
+    }
     console.log(
       `[lifeos-auth] login_flow refusé : ${JSON.stringify(step.errors ?? step.step_id ?? step.type)}`
     );
@@ -166,9 +203,11 @@ async function verifyLoginFlow(
 
 export async function verifyHaCredentials(
   username: string,
-  password: string
+  password: string,
+  mfaCode?: string
 ): Promise<HaLoginResult> {
-  if (process.env.SUPERVISOR_TOKEN) {
+  // Un code MFA ne peut être consommé que par le login_flow.
+  if (process.env.SUPERVISOR_TOKEN && !mfaCode) {
     const sup = await verifySupervisorAuth(username, password);
     if (sup.ok) return sup;
     // Canal de secours : le login_flow du cœur HA via le réseau interne.
@@ -178,5 +217,5 @@ export async function verifyHaCredentials(
     // Erreur la plus parlante des deux.
     return flow.reason === "not_configured" || flow.reason === "unreachable" ? sup : flow;
   }
-  return verifyLoginFlow(username, password);
+  return verifyLoginFlow(username, password, mfaCode);
 }

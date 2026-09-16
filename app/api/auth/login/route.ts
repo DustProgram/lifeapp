@@ -19,10 +19,16 @@ const safeEquals = (a: string, b: string) => {
 export async function POST(req: NextRequest) {
   let username = "";
   let password = "";
+  let mfaCode: string | undefined;
   try {
-    const body = (await req.json()) as { username?: string; password?: string };
+    const body = (await req.json()) as {
+      username?: string;
+      password?: string;
+      code?: string;
+    };
     username = String(body.username ?? "").trim();
     password = String(body.password ?? "");
+    mfaCode = String(body.code ?? "").trim() || undefined;
   } catch {
     return NextResponse.json({ error: "Requête invalide." }, { status: 400 });
   }
@@ -52,17 +58,26 @@ export async function POST(req: NextRequest) {
   let error = "Identifiants incorrects.";
   let detail: string | undefined;
 
+  let mfaRequired = false;
   if (haConfigured()) {
-    const result = await verifyHaCredentials(username, password);
+    const result = await verifyHaCredentials(username, password, mfaCode);
     ok = result.ok;
     detail = result.ok
       ? "home-assistant"
       : `home-assistant: ${result.reason}${result.detail ? ` (${result.detail})` : ""}`;
     if (!result.ok && result.reason === "unreachable")
       error = "La validation Home Assistant est injoignable. Regarde le journal de l'add-on.";
-    if (!result.ok && result.reason === "mfa_required")
-      error =
-        "Ce compte exige le MFA, non supporté pour l'instant. Utilise un compte HA sans MFA ou APP_USER/APP_PASSWORD.";
+    if (!result.ok && result.reason === "mfa_required") {
+      mfaRequired = true;
+      error = "Double authentification : entre le code de ton app (6 chiffres).";
+    }
+    if (
+      !result.ok &&
+      (result.detail?.startsWith("code MFA") || result.detail?.startsWith("mfa "))
+    ) {
+      mfaRequired = true;
+      error = "Code de validation refusé. Vérifie le code (il change toutes les 30 s).";
+    }
   } else if (process.env.APP_USER && process.env.APP_PASSWORD) {
     // Standalone fallback when no Home Assistant instance is configured.
     ok =
@@ -87,7 +102,7 @@ export async function POST(req: NextRequest) {
   );
 
   if (!ok) {
-    return NextResponse.json({ error }, { status: 401 });
+    return NextResponse.json({ error, mfaRequired }, { status: 401 });
   }
 
   const res = NextResponse.json({ ok: true, user: username });

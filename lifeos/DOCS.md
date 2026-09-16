@@ -16,7 +16,10 @@ dark mode, et importation de routines JSON générées par une IA.
 ## Connexion
 
 Utilise directement **tes identifiants Home Assistant** : l'add-on les
-valide auprès du Supervisor (`auth_api`), rien n'est stocké.
+valide auprès de HA (API Supervisor, avec repli sur le `login_flow`
+officiel), rien n'est stocké. Si ton compte a la **double authentification**,
+un champ « code de validation » apparaît automatiquement — entre le code à
+6 chiffres de ton app (Mots de passe Apple, Google Authenticator…).
 Chaque tentative de connexion (réussie ou non) est consignée dans le journal
 de sécurité, consultable dans l'app via l'icône 📋 (`/logs`).
 

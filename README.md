@@ -68,8 +68,8 @@ token n'est stocké. Chaque tentative (réussie ou non) est consignée dans
 `data/auth-log.jsonl` et consultable dans l'app (`/logs`) : date, utilisateur,
 IP, user-agent, résultat.
 
-Les comptes HA avec MFA ne sont pas encore supportés — utilise le fallback
-`APP_USER`/`APP_PASSWORD` dans ce cas.
+Les comptes HA avec double authentification (TOTP) sont supportés : le
+formulaire demande automatiquement le code de validation quand HA l'exige.
 
 ### Dashboard modulaire
 - Pages multiples (onglets) : une page par routine.

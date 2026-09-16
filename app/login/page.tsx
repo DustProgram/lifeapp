@@ -8,6 +8,8 @@ export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
+  const [mfaRequired, setMfaRequired] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -19,10 +21,12 @@ export default function LoginPage() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, code: code || undefined }),
       });
-      const data = (await res.json()) as { error?: string };
+      const data = (await res.json()) as { error?: string; mfaRequired?: boolean };
       if (!res.ok) {
+        // Le compte a la double authentification : on révèle le champ code.
+        if (data.mfaRequired) setMfaRequired(true);
         setError(data.error || "Connexion refusée.");
         return;
       }
@@ -76,6 +80,22 @@ export default function LoginPage() {
               className="rounded-lg border border-line-soft bg-card-2 px-3 py-2 text-sm text-foreground outline-none focus:border-line"
             />
           </label>
+
+          {mfaRequired && (
+            <label className="flex flex-col gap-1 text-[10px] font-bold uppercase tracking-wider text-muted">
+              Code de validation (double authentification)
+              <input
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder="123456"
+                maxLength={8}
+                autoFocus
+                className="rounded-lg border border-line-soft bg-card-2 px-3 py-2 font-mono text-sm tracking-widest text-foreground outline-none focus:border-line"
+              />
+            </label>
+          )}
 
           {error && (
             <p className="rounded-lg border-2 border-danger/50 bg-danger/10 px-3 py-2 text-xs font-semibold text-danger">
