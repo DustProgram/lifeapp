@@ -37,6 +37,7 @@ créée avec tous les widgets configurés, prêts à l'emploi.
 | `routine.name` | string ≤ 60 | ✔ | Nom de l'onglet créé. |
 | `routine.icon` | string ≤ 8 | — | Un emoji pour l'onglet. |
 | `routine.description` | string ≤ 500 | — | Réservé (non affiché pour l'instant). |
+| `routine.theme` | objet | — | Palette de la page : `background`, `card`, `foreground`, `line`, `accent` en hex `#rrggbb`. Tout champ absent hérite du thème de l'utilisateur. Ex. `{ "accent": "#7aa2ff", "background": "#0a0f1e" }`. |
 | `widgets[]` | array | ✔ | Les widgets, dans l'ordre de la grille. |
 
 Chaque widget partage trois champs :

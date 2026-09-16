@@ -15,7 +15,8 @@
       "properties": {
         "name": { "type": "string", "minLength": 1, "maxLength": 60 },
         "icon": { "type": "string", "maxLength": 8, "description": "Un emoji affiché dans l'onglet de la page." },
-        "description": { "type": "string", "maxLength": 500 }
+        "description": { "type": "string", "maxLength": 500 },
+        "theme": { "$ref": "#/$defs/theme" }
       }
     },
     "widgets": {
@@ -33,6 +34,19 @@
     }
   },
   "$defs": {
+    "hexColor": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+    "theme": {
+      "type": "object",
+      "description": "Palette de la page (optionnelle). Tout champ absent hérite du thème de l'utilisateur ; les tons dérivés sont calculés automatiquement.",
+      "additionalProperties": false,
+      "properties": {
+        "background": { "$ref": "#/$defs/hexColor" },
+        "card": { "$ref": "#/$defs/hexColor" },
+        "foreground": { "$ref": "#/$defs/hexColor" },
+        "line": { "$ref": "#/$defs/hexColor" },
+        "accent": { "$ref": "#/$defs/hexColor" }
+      }
+    },
     "size": {
       "type": "string",
       "enum": ["sm", "md", "lg"],

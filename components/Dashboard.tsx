@@ -3,10 +3,15 @@
 import { useEffect, useRef } from "react";
 import { DashboardGrid } from "@/components/grid/DashboardGrid";
 import { PagesOverview } from "@/components/PagesOverview";
+import { ThemeApplier } from "@/components/ThemeApplier";
 import { useDashboard } from "@/lib/store";
-import type { RoutinePage } from "@/lib/types";
+import type { RoutinePage, ThemeOverride } from "@/lib/types";
 
-type SavedState = { pages: RoutinePage[]; activePageId: string | null };
+type SavedState = {
+  pages: RoutinePage[];
+  activePageId: string | null;
+  theme?: ThemeOverride | null;
+};
 
 /** Ancien format zustand/persist (v1) encore présent dans le navigateur. */
 function readLegacyLocalState(): SavedState | null {
@@ -61,9 +66,18 @@ export function Dashboard() {
   useEffect(() => {
     const unsubscribe = useDashboard.subscribe((s, prev) => {
       if (!s.hydrated) return;
-      if (s.pages === prev.pages && s.activePageId === prev.activePageId) return;
+      if (
+        s.pages === prev.pages &&
+        s.activePageId === prev.activePageId &&
+        s.theme === prev.theme
+      )
+        return;
       if (saveTimer.current) clearTimeout(saveTimer.current);
-      const payload: SavedState = { pages: s.pages, activePageId: s.activePageId };
+      const payload: SavedState = {
+        pages: s.pages,
+        activePageId: s.activePageId,
+        theme: s.theme,
+      };
       saveTimer.current = setTimeout(() => {
         fetch("/api/dashboard", {
           method: "PUT",
@@ -91,5 +105,10 @@ export function Dashboard() {
     );
   }
 
-  return activePageId === null ? <PagesOverview /> : <DashboardGrid />;
+  return (
+    <>
+      <ThemeApplier />
+      {activePageId === null ? <PagesOverview /> : <DashboardGrid />}
+    </>
+  );
 }

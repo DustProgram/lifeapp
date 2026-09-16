@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ImportDialog } from "@/components/ImportDialog";
+import { ThemeDialog } from "@/components/ThemeDialog";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useDashboard } from "@/lib/store";
 import type { WidgetType } from "@/lib/types";
@@ -117,9 +118,11 @@ function PageTabs() {
 /** Menu ⋮ (mobile) : les actions secondaires regroupées. */
 function OverflowMenu({
   onImport,
+  onCustomize,
   onLogout,
 }: {
   onImport: () => void;
+  onCustomize: () => void;
   onLogout: () => void;
 }) {
   const { setActivePage } = useDashboard();
@@ -157,6 +160,15 @@ function OverflowMenu({
           >
             📥 Importer une routine
           </button>
+          <button
+            className={item}
+            onClick={() => {
+              onCustomize();
+              setOpen(false);
+            }}
+          >
+            🎨 Personnaliser
+          </button>
           <button className={`${item} hover:text-danger`} onClick={onLogout}>
             ↩ Se déconnecter
           </button>
@@ -169,6 +181,7 @@ function OverflowMenu({
 export function TopBar() {
   const router = useRouter();
   const [importing, setImporting] = useState(false);
+  const [theming, setTheming] = useState(false);
   const { pages, activePageId, setActivePage } = useDashboard();
   const activePage = pages.find((p) => p.id === activePageId);
 
@@ -229,6 +242,20 @@ export function TopBar() {
               Importer
             </button>
             {activePageId !== null && <AddWidgetMenu />}
+            <button
+              onClick={() => setTheming(true)}
+              aria-label="Personnaliser les couleurs"
+              title="Personnaliser les couleurs"
+              className="hidden h-9 w-9 items-center justify-center rounded-lg border-2 border-line bg-card hover:bg-card-2 md:flex"
+            >
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+                <path d="M8 1.5a6.5 6.5 0 1 0 0 13c.9 0 1.3-.6 1.3-1.2 0-.5-.3-.9-.6-1.2-.3-.3-.6-.7-.6-1.2 0-.9.7-1.4 1.6-1.4h1.5c1.8 0 3.3-1.2 3.3-3C14.5 4 11.6 1.5 8 1.5z" strokeLinejoin="round" />
+                <circle cx="5" cy="6" r="1" fill="currentColor" stroke="none" />
+                <circle cx="8.2" cy="4.4" r="1" fill="currentColor" stroke="none" />
+                <circle cx="11.3" cy="6" r="1" fill="currentColor" stroke="none" />
+                <circle cx="4.6" cy="9.4" r="1" fill="currentColor" stroke="none" />
+              </svg>
+            </button>
             <ThemeToggle />
             <button
               onClick={logout}
@@ -241,11 +268,16 @@ export function TopBar() {
                 <path d="M10.5 11.5L14 8l-3.5-3.5M14 8H6" />
               </svg>
             </button>
-            <OverflowMenu onImport={() => setImporting(true)} onLogout={logout} />
+            <OverflowMenu
+              onImport={() => setImporting(true)}
+              onCustomize={() => setTheming(true)}
+              onLogout={logout}
+            />
           </div>
         </div>
       </header>
       {importing && <ImportDialog onClose={() => setImporting(false)} />}
+      {theming && <ThemeDialog onClose={() => setTheming(false)} />}
     </>
   );
 }

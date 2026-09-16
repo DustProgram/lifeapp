@@ -28,7 +28,7 @@ export async function PUT(req: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
 
-  let body: { pages?: unknown; activePageId?: unknown };
+  let body: { pages?: unknown; activePageId?: unknown; theme?: unknown };
   try {
     const raw = await req.text();
     if (raw.length > 2_000_000) {
@@ -49,7 +49,14 @@ export async function PUT(req: NextRequest) {
     const tmp = target + ".tmp";
     await writeFile(
       tmp,
-      JSON.stringify({ pages: body.pages, activePageId: body.activePageId ?? null }),
+      JSON.stringify({
+        pages: body.pages,
+        activePageId: body.activePageId ?? null,
+        theme:
+          body.theme && typeof body.theme === "object" && !Array.isArray(body.theme)
+            ? body.theme
+            : null,
+      }),
       "utf8"
     );
     await rename(tmp, target);

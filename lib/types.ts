@@ -58,10 +58,24 @@ export type Widget = WidgetBase &
     | { type: "calendar"; config: CalendarConfig }
   );
 
+/**
+ * Couleurs personnalisables (hex #rrggbb). Tout champ absent hérite du thème
+ * de base ; les tons dérivés (muted, line-soft, accent-ink…) sont calculés.
+ */
+export interface ThemeOverride {
+  background?: string;
+  card?: string;
+  foreground?: string;
+  line?: string;
+  accent?: string;
+}
+
 export interface RoutinePage {
   id: string;
   name: string;
   icon?: string;
+  /** Palette propre à la page ; prime sur le thème de l'interface. */
+  theme?: ThemeOverride;
   widgets: Widget[];
 }
 

@@ -4,6 +4,15 @@ import { useState, useSyncExternalStore } from "react";
 
 const emptySubscribe = () => () => {};
 
+/** Bascule Nuit/Blanc (classe .dark) et notifie les thèmes personnalisés. */
+export function setThemeMode(dark: boolean) {
+  document.documentElement.classList.toggle("dark", dark);
+  try {
+    localStorage.setItem("lifeos-theme", dark ? "dark" : "light");
+  } catch {}
+  window.dispatchEvent(new Event("lifeos-mode-change"));
+}
+
 export function ThemeToggle() {
   // Rendu neutre côté serveur, icône réelle après hydratation.
   const mounted = useSyncExternalStore(
@@ -20,10 +29,7 @@ export function ThemeToggle() {
   const toggle = () => {
     const next = !dark;
     setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    try {
-      localStorage.setItem("lifeos-theme", next ? "dark" : "light");
-    } catch {}
+    setThemeMode(next);
   };
 
   return (

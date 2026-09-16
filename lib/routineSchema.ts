@@ -12,6 +12,19 @@ import type { RoutinePage, Widget } from "./types";
 
 const sizeSchema = z.enum(["sm", "md", "lg"]).default("md");
 
+const hexColor = z
+  .string()
+  .regex(/^#[0-9a-fA-F]{6}$/, "couleur hexadécimale attendue (#rrggbb)");
+
+// Palette optionnelle de la page créée (tout champ absent hérite du thème).
+const themeSchema = z.object({
+  background: hexColor.optional(),
+  card: hexColor.optional(),
+  foreground: hexColor.optional(),
+  line: hexColor.optional(),
+  accent: hexColor.optional(),
+});
+
 const noteWidgetSchema = z.object({
   type: z.literal("note"),
   title: z.string().min(1).max(80),
@@ -76,6 +89,7 @@ export const routineImportSchema = z.object({
     name: z.string().min(1).max(60),
     icon: z.string().max(8).optional(),
     description: z.string().max(500).optional(),
+    theme: themeSchema.optional(),
   }),
   widgets: z
     .array(
@@ -143,6 +157,7 @@ export function parseRoutineImport(raw: string):
       id: uid(),
       name: data.routine.name,
       icon: data.routine.icon,
+      theme: data.routine.theme,
       widgets,
     },
   };

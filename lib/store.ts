@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import type { RoutinePage, Widget, WidgetSize, WidgetType } from "./types";
+import type { RoutinePage, ThemeOverride, Widget, WidgetSize, WidgetType } from "./types";
 
 const uid = () =>
   typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -71,9 +71,20 @@ interface DashboardState {
   pages: RoutinePage[];
   /** null = vue d'ensemble (toutes les pages). */
   activePageId: string | null;
+  /** Thème d'interface propre à l'utilisateur (null = thème de base). */
+  theme: ThemeOverride | null;
   /** true une fois l'état chargé depuis le serveur. */
   hydrated: boolean;
-  hydrate: (state: { pages: RoutinePage[]; activePageId: string | null } | null) => void;
+  hydrate: (
+    state: {
+      pages: RoutinePage[];
+      activePageId: string | null;
+      theme?: ThemeOverride | null;
+    } | null
+  ) => void;
+  /** patch=null réinitialise ; une valeur undefined dans le patch efface la clé. */
+  updateAppTheme: (patch: Partial<ThemeOverride> | null) => void;
+  updatePageTheme: (pageId: string, patch: Partial<ThemeOverride> | null) => void;
   setActivePage: (id: string | null) => void;
   addPage: (name: string, icon?: string) => void;
   addImportedPage: (page: RoutinePage) => void;
@@ -94,17 +105,46 @@ const patchActivePage = (
   pages: state.pages.map((p) => (p.id === state.activePageId ? fn(p) : p)),
 });
 
+/** Applique un patch de thème ; retire les clés passées à undefined. */
+function mergeTheme(
+  current: ThemeOverride | null | undefined,
+  patch: Partial<ThemeOverride> | null
+): ThemeOverride | null {
+  if (patch === null) return null;
+  const next: ThemeOverride = { ...current };
+  for (const [k, v] of Object.entries(patch) as [keyof ThemeOverride, string | undefined][]) {
+    if (v === undefined) delete next[k];
+    else next[k] = v;
+  }
+  return Object.keys(next).length > 0 ? next : null;
+}
+
 export const useDashboard = create<DashboardState>()((set) => ({
   pages: [welcomePage],
   activePageId: welcomePage.id,
+  theme: null,
   hydrated: false,
 
   hydrate: (state) =>
     set(
       state && Array.isArray(state.pages) && state.pages.length > 0
-        ? { pages: state.pages, activePageId: state.activePageId, hydrated: true }
+        ? {
+            pages: state.pages,
+            activePageId: state.activePageId,
+            theme: state.theme ?? null,
+            hydrated: true,
+          }
         : { hydrated: true }
     ),
+
+  updateAppTheme: (patch) => set((s) => ({ theme: mergeTheme(s.theme, patch) })),
+
+  updatePageTheme: (pageId, patch) =>
+    set((s) => ({
+      pages: s.pages.map((p) =>
+        p.id === pageId ? { ...p, theme: mergeTheme(p.theme, patch) ?? undefined } : p
+      ),
+    })),
 
   setActivePage: (id) => set({ activePageId: id }),
 
