@@ -13,7 +13,12 @@
 
 export type HaLoginResult =
   | { ok: true }
-  | { ok: false; reason: "invalid_credentials" | "mfa_required" | "unreachable" | "not_configured" };
+  | {
+      ok: false;
+      reason: "invalid_credentials" | "mfa_required" | "unreachable" | "not_configured";
+      /** Diagnostic technique (code HTTP, étape) pour les journaux. */
+      detail?: string;
+    };
 
 export function haConfigured(): boolean {
   return Boolean(process.env.HA_URL || process.env.SUPERVISOR_TOKEN);
@@ -28,21 +33,52 @@ async function verifySupervisorAuth(
   username: string,
   password: string
 ): Promise<HaLoginResult> {
-  try {
+  const attempt = async (contentType: string, body: string) => {
     const res = await fetch("http://supervisor/auth", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.SUPERVISOR_TOKEN}`,
-        "Content-Type": "application/json",
+        "Content-Type": contentType,
       },
-      body: JSON.stringify({ username, password }),
+      body,
       signal: AbortSignal.timeout(10000),
     });
+    // Le corps d'erreur du Supervisor est utile au diagnostic (jamais le mdp).
+    const text = res.ok ? "" : (await res.text()).slice(0, 200);
+    console.log(
+      `[lifeos-auth] supervisor /auth (${contentType.split("/")[1]}) -> HTTP ${res.status}${text ? ` : ${text}` : ""}`
+    );
+    return res;
+  };
+
+  try {
+    let res = await attempt("application/json", JSON.stringify({ username, password }));
+    // Certains Supervisors n'acceptent que le format formulaire : on retente.
+    if (!res.ok && res.status !== 401) {
+      res = await attempt(
+        "application/x-www-form-urlencoded",
+        new URLSearchParams({ username, password }).toString()
+      );
+    }
     if (res.ok) return { ok: true };
-    if (res.status >= 500) return { ok: false, reason: "unreachable" };
-    return { ok: false, reason: "invalid_credentials" };
-  } catch {
-    return { ok: false, reason: "unreachable" };
+    if (res.status === 403) {
+      return {
+        ok: false,
+        reason: "unreachable",
+        detail: "supervisor 403 — auth_api refusé (add-on non autorisé)",
+      };
+    }
+    if (res.status >= 500) {
+      return { ok: false, reason: "unreachable", detail: `supervisor ${res.status}` };
+    }
+    return {
+      ok: false,
+      reason: "invalid_credentials",
+      detail: `supervisor ${res.status}`,
+    };
+  } catch (err) {
+    console.log(`[lifeos-auth] supervisor /auth injoignable : ${String(err)}`);
+    return { ok: false, reason: "unreachable", detail: "fetch failed" };
   }
 }
 

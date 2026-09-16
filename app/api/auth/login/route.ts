@@ -55,9 +55,11 @@ export async function POST(req: NextRequest) {
   if (haConfigured()) {
     const result = await verifyHaCredentials(username, password);
     ok = result.ok;
-    detail = result.ok ? "home-assistant" : `home-assistant: ${result.reason}`;
+    detail = result.ok
+      ? "home-assistant"
+      : `home-assistant: ${result.reason}${result.detail ? ` (${result.detail})` : ""}`;
     if (!result.ok && result.reason === "unreachable")
-      error = "Home Assistant est injoignable. Vérifie HA_URL.";
+      error = "La validation Home Assistant est injoignable. Regarde le journal de l'add-on.";
     if (!result.ok && result.reason === "mfa_required")
       error =
         "Ce compte exige le MFA, non supporté pour l'instant. Utilise un compte HA sans MFA ou APP_USER/APP_PASSWORD.";
@@ -79,6 +81,10 @@ export async function POST(req: NextRequest) {
   }
 
   await log(ok, detail);
+  // Visible dans l'onglet Journal de l'add-on, pour diagnostiquer sans être connecté.
+  console.log(
+    `[lifeos-auth] tentative user="${username}" depuis ${ip} -> ${ok ? "OK" : "ÉCHEC"} (${detail})`
+  );
 
   if (!ok) {
     return NextResponse.json({ error }, { status: 401 });
