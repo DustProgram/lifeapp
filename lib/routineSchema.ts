@@ -71,6 +71,7 @@ const checklistWidgetSchema = z.object({
   title: z.string().min(1).max(80),
   size: sizeSchema.default("sm"),
   config: z.object({
+    description: z.string().max(300).optional(),
     items: z.array(checklistItemSchema).min(1).max(100),
     resetDaily: z.boolean().default(true),
   }),
@@ -163,6 +164,7 @@ export function parseRoutineImport(raw: string):
         title: w.title,
         size: w.size,
         config: {
+          description: w.config.description,
           resetDaily: w.config.resetDaily,
           items: w.config.items.map((item) =>
             typeof item === "string"

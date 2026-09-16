@@ -142,6 +142,11 @@
           "required": ["items"],
           "additionalProperties": false,
           "properties": {
+            "description": {
+              "type": "string",
+              "maxLength": 300,
+              "description": "Consignes affichées sous le titre (technique, contexte…)."
+            },
             "items": {
               "type": "array",
               "minItems": 1,

@@ -4,15 +4,7 @@
     "name": "Quotidien 5 min",
     "icon": "⚡",
     "description": "Bloc quotidien — même les jours de repos",
-    "days": [
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6
-    ]
+    "days": [0, 1, 2, 3, 4, 5, 6]
   },
   "widgets": [
     {
@@ -20,6 +12,7 @@
       "title": "Le bloc du jour",
       "size": "sm",
       "config": {
+        "description": "5 min chrono, tous les jours, même repos. La régularité bat l'intensité.",
         "items": [
           "Planche 2 × 30 s",
           "Dead bug × 10",
@@ -37,7 +30,8 @@
         "mode": "interval",
         "sets": 2,
         "workSec": 30,
-        "restSec": 30
+        "restSec": 30,
+        "description": "Coudes sous les épaules, corps en ligne, respiration lente."
       }
     },
     {
@@ -48,7 +42,8 @@
         "mode": "interval",
         "sets": 4,
         "workSec": 30,
-        "restSec": 5
+        "restSec": 5,
+        "description": "1 ischios droit · 2 ischios gauche · 3 fléchisseur droit (fente basse) · 4 fléchisseur gauche."
       }
     },
     {

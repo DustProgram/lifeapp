@@ -104,6 +104,8 @@ interface DashboardState {
   setActivePage: (id: string | null) => void;
   addPage: (name: string, icon?: string) => void;
   addImportedPage: (page: RoutinePage) => void;
+  /** Remplace le contenu d'une page existante (id, verrou et disposition conservés). */
+  replacePage: (pageId: string, page: RoutinePage) => void;
   renamePage: (id: string, name: string) => void;
   removePage: (id: string) => void;
   addWidget: (type: WidgetType) => void;
@@ -214,6 +216,15 @@ export const useDashboard = create<DashboardState>()((set) => ({
 
   addImportedPage: (page) =>
     set((s) => ({ pages: [...s.pages, page], activePageId: page.id })),
+
+  replacePage: (pageId, page) =>
+    set((s) => ({
+      pages: s.pages.map((p) =>
+        p.id === pageId
+          ? { ...page, id: p.id, locked: p.locked, layout: p.layout }
+          : p
+      ),
+    })),
 
   renamePage: (id, name) =>
     set((s) => ({

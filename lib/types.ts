@@ -32,6 +32,8 @@ export interface ChecklistItem {
 }
 
 export interface ChecklistConfig {
+  /** Consignes affichées sous le titre (technique, contexte…). */
+  description?: string;
   items: ChecklistItem[];
   /** When true, all items are unchecked again on the first open of a new day. */
   resetDaily: boolean;

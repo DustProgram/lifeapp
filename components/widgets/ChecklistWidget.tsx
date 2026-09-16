@@ -61,6 +61,9 @@ export function ChecklistWidget({ widget }: { widget: Widget & { type: "checklis
         )
       }
     >
+      {cfg.description && (
+        <p className="mb-2 text-xs leading-snug text-muted">{cfg.description}</p>
+      )}
       <div className="mb-2 flex items-center gap-2">
         <div className="h-1.5 flex-1 overflow-hidden rounded-full border border-line-soft bg-card-2">
           <div

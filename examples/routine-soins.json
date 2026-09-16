@@ -4,15 +4,7 @@
     "name": "Soins",
     "icon": "🧴",
     "description": "Visage, rasage, cheveux — zéro poil incarné, zéro tache",
-    "days": [
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6
-    ]
+    "days": [0, 1, 2, 3, 4, 5, 6]
   },
   "widgets": [
     {
@@ -20,10 +12,11 @@
       "title": "Visage — matin",
       "size": "sm",
       "config": {
+        "description": "Tous les jours, dans l'ordre.",
         "items": [
           "Nettoyant doux (ou eau tiède)",
           "Sérum acide hyaluronique sur peau humide",
-          "Crème hydratante",
+          "Crème hydratante (CeraVe / Toleriane Riche)",
           "SPF 50 — 2 doigts, visage + cou"
         ],
         "resetDaily": true
@@ -34,6 +27,7 @@
       "title": "Visage — soir",
       "size": "sm",
       "config": {
+        "description": "Semaine 1 : niacinamide un soir sur deux. Semaine 2 : tous les soirs. Si ça tire : 3 soirs/semaine.",
         "items": [
           "Nettoyant doux",
           "Sérum niacinamide 10 %",
@@ -47,7 +41,22 @@
       "title": "Semaine type",
       "size": "md",
       "config": {
-        "markdown": "## Rythme\n\n| Quoi | Quand |\n|---|---|\n| Gommage enzyme grenade | 2×/sem le soir, **la veille du rasage** — jamais le jour même |\n| Rasage | tous les 2-3 jours max |\n| Lavage cheveux | mercredi + dimanche |\n| Niacinamide cuir chevelu | 2-3×/semaine |\n| Contours (lame T) | tous les 7-10 jours, jamais à zéro |\n\n> Démarrage : sem. 1 niacinamide un soir sur deux, 1 seul gommage. Sem. 2 : tous les soirs. Si ça tire : 3 soirs/sem."
+        "markdown": "## Rythme\n\n| Quoi | Quand |\n|---|---|\n| Gommage enzyme grenade | 2×/sem le soir, **la veille du rasage** — jamais le jour même |\n| Rasage | tous les 2-3 jours max |\n| Lavage cheveux | mercredi + dimanche |\n| Niacinamide cuir chevelu | 2-3×/semaine, quelques gouttes massées |\n| Contours (lame T) | tous les 7-10 jours |\n\n> Corps : gel douche doux surgras, karité ou lait sur peau humide après la douche. Poils incarnés cou/torse : même logique gommage + niacinamide."
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Gommage (2×/sem, le soir)",
+      "size": "sm",
+      "config": {
+        "description": "Enzyme de grenade, la veille du rasage — jamais le jour même du rasage.",
+        "items": [
+          "Visage nettoyé et sec",
+          "Gommage enzyme de grenade",
+          "Rinçage eau tiède",
+          "Aloe vera ou crème"
+        ],
+        "resetDaily": true
       }
     },
     {
@@ -55,8 +64,9 @@
       "title": "Rasage (tous les 2-3 j)",
       "size": "sm",
       "config": {
+        "description": "OneBlade : sabot 1 mm plutôt que lame nue, sens du poil, un seul passage.",
         "items": [
-          "Peau tiède + huile jojoba/ricin",
+          "Peau tiède et humide + huile jojoba/ricin",
           "Sabot 1 mm, sens du poil, 1 passage",
           "Eau froide",
           "Aloe vera épais",
@@ -67,14 +77,29 @@
     },
     {
       "type": "checklist",
+      "title": "Contours (tous les 7-10 j)",
+      "size": "sm",
+      "config": {
+        "description": "Tondeuse de finition lame T avec léger gap, jamais à zéro. On enlève seulement sous la ligne naturelle, on ne monte jamais.",
+        "items": [
+          "Cheveux propres et secs",
+          "Tracer sous la ligne naturelle uniquement",
+          "Aftercare : eau froide + aloe + niacinamide"
+        ],
+        "resetDaily": false
+      }
+    },
+    {
+      "type": "checklist",
       "title": "Cheveux (mer + dim)",
       "size": "sm",
       "config": {
+        "description": "2 lavages/semaine. Gélules kératine selon la boîte (≈ 2/jour au repas, 1 mois).",
         "items": [
-          "Shampoing + protéines de riz",
-          "Après-shampoing kératine 3-5 min",
-          "Leave-in → crème bouclés → huile",
-          "Niacinamide cuir chevelu (massé)"
+          "Shampoing neutre + protéines de riz",
+          "Après-shampoing kératine 3-5 min, démêlage aux doigts",
+          "Essorer puis leave-in → crème bouclés → huile pour sceller",
+          "Niacinamide cuir chevelu massé (2-3×/sem)"
         ],
         "resetDaily": true
       }
@@ -85,7 +110,8 @@
       "size": "sm",
       "config": {
         "mode": "countdown",
-        "durationSec": 240
+        "durationSec": 240,
+        "description": "3 à 5 min de pose kératine avant rinçage."
       }
     },
     {
@@ -93,13 +119,14 @@
       "title": "À acheter",
       "size": "sm",
       "config": {
+        "description": "Liste une fois — elle ne se décoche pas chaque jour.",
         "items": [
           "Nettoyant visage doux",
           "Crème hydratante CeraVe",
-          "SPF 50 Anthelios UVmune 400",
-          "Huile jojoba ou ricin",
+          "SPF 50 Anthelios UVmune 400 sans parfum",
+          "Huile jojoba ou ricin (rasage + cheveux)",
           "Gel douche surgras + karité",
-          "Tondeuse de finition lame T"
+          "Tondeuse de finition lame T (Wahl Detailer / SkeletonFX)"
         ],
         "resetDaily": false
       }

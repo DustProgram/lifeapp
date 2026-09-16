@@ -4,9 +4,7 @@
     "name": "Mobilité",
     "icon": "🧘",
     "description": "Séance dédiée 15-20 min, un jour de repos",
-    "days": [
-      5
-    ]
+    "days": [5]
   },
   "widgets": [
     {
@@ -25,7 +23,8 @@
         "mode": "interval",
         "sets": 4,
         "workSec": 60,
-        "restSec": 10
+        "restSec": 10,
+        "description": "Assis, une jambe tendue, penche-toi depuis les hanches. Alterne le côté à chaque phase (4 phases = 2 par côté)."
       }
     },
     {
@@ -36,7 +35,8 @@
         "mode": "interval",
         "sets": 4,
         "workSec": 60,
-        "restSec": 10
+        "restSec": 10,
+        "description": "Fente basse, genou arrière au sol, bassin poussé vers l'avant, buste droit. Alterne le côté à chaque phase."
       }
     },
     {
@@ -47,7 +47,8 @@
         "mode": "interval",
         "sets": 4,
         "workSec": 60,
-        "restSec": 10
+        "restSec": 10,
+        "description": "Tibia avant posé au sol, jambe arrière tendue. Version fessier allongé si trop dur. Alterne le côté à chaque phase."
       }
     },
     {
@@ -58,7 +59,8 @@
         "mode": "interval",
         "sets": 2,
         "workSec": 60,
-        "restSec": 10
+        "restSec": 10,
+        "description": "Avant-bras sur le cadre de porte, coude à 90°, avance doucement le buste."
       }
     },
     {
@@ -70,7 +72,7 @@
         "sets": 3,
         "workSec": 60,
         "restSec": 15,
-        "description": "Accroché à un montant de porte, talons au sol."
+        "description": "Accroché à un montant de porte, talons au sol, descends au plus bas, dos long."
       }
     },
     {
@@ -78,11 +80,8 @@
       "title": "Jefferson curl 3 × 8",
       "size": "sm",
       "config": {
-        "items": [
-          "Série 1 — sans charge, lent",
-          "Série 2",
-          "Série 3"
-        ],
+        "description": "Sans charge au début. Debout, menton vers la poitrine, descends vertèbre par vertèbre, remonte de la même façon, très lentement.",
+        "items": ["Série 1", "Série 2", "Série 3"],
         "resetDaily": true
       }
     },
@@ -94,7 +93,8 @@
         "mode": "interval",
         "sets": 2,
         "workSec": 30,
-        "restSec": 5
+        "restSec": 5,
+        "description": "Allongé sur le dos, genou ramené croisé au sol, épaules plaquées. Alterne le côté."
       }
     }
   ]
