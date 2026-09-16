@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { ImportDialog } from "@/components/ImportDialog";
 import { ThemeDialog } from "@/components/ThemeDialog";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { useDashboard } from "@/lib/store";
+import { useActivePageLocked, useDashboard } from "@/lib/store";
 import type { WidgetType } from "@/lib/types";
 
 const WIDGET_TYPES: { type: WidgetType; label: string; hint: string }[] = [
@@ -86,6 +86,10 @@ function PageTabs() {
             }}
             onContextMenu={(e) => {
               e.preventDefault();
+              if (p.locked) {
+                window.alert("Page verrouillée : déverrouille-la (🔒) avant de la supprimer.");
+                return;
+              }
               if (window.confirm(`Supprimer la page « ${p.name} » ?`)) {
                 removePage(p.id);
               }
@@ -99,6 +103,11 @@ function PageTabs() {
           >
             {p.icon && <span aria-hidden>{p.icon}</span>}
             {p.name}
+            {p.locked && (
+              <span className="text-[10px]" aria-label="verrouillée">
+                🔒
+              </span>
+            )}
           </button>
         );
       })}
@@ -126,7 +135,8 @@ function OverflowMenu({
   onCustomize: () => void;
   onLogout: () => void;
 }) {
-  const { setActivePage } = useDashboard();
+  const { setActivePage, activePageId, togglePageLock } = useDashboard();
+  const locked = useActivePageLocked();
   const [open, setOpen] = useState(false);
   const ref = useClickOutside(open, () => setOpen(false));
   const item =
@@ -170,6 +180,17 @@ function OverflowMenu({
           >
             🎨 Personnaliser
           </button>
+          {activePageId !== null && (
+            <button
+              className={item}
+              onClick={() => {
+                togglePageLock(activePageId);
+                setOpen(false);
+              }}
+            >
+              {locked ? "🔓 Déverrouiller la page" : "🔒 Verrouiller la page"}
+            </button>
+          )}
           <button className={`${item} hover:text-danger`} onClick={onLogout}>
             ↩ Se déconnecter
           </button>
@@ -183,8 +204,9 @@ export function TopBar() {
   const router = useRouter();
   const [importing, setImporting] = useState(false);
   const [theming, setTheming] = useState(false);
-  const { pages, activePageId, setActivePage } = useDashboard();
+  const { pages, activePageId, setActivePage, togglePageLock } = useDashboard();
   const activePage = pages.find((p) => p.id === activePageId);
+  const locked = Boolean(activePage?.locked);
 
   const logout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -220,6 +242,7 @@ export function TopBar() {
                 <>
                   {activePage.icon && <span aria-hidden>{activePage.icon} </span>}
                   {activePage.name}
+                  {locked && <span aria-label="verrouillée"> 🔒</span>}
                 </>
               ) : (
                 "Toutes les pages"
@@ -242,7 +265,36 @@ export function TopBar() {
             >
               Importer
             </button>
-            {activePageId !== null && <AddWidgetMenu />}
+            {activePageId !== null && !locked && <AddWidgetMenu />}
+            {activePage && (
+              <button
+                onClick={() => togglePageLock(activePage.id)}
+                aria-label={locked ? "Déverrouiller la page" : "Verrouiller la page"}
+                title={
+                  locked
+                    ? "Page verrouillée — cliquer pour déverrouiller"
+                    : "Verrouiller la page (fige les widgets)"
+                }
+                aria-pressed={locked}
+                className={`hidden h-9 w-9 items-center justify-center rounded-lg border-2 md:flex ${
+                  locked
+                    ? "border-line bg-accent text-accent-ink shadow-brutal-sm"
+                    : "border-line bg-card text-muted hover:bg-card-2 hover:text-foreground"
+                }`}
+              >
+                {locked ? (
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+                    <rect x="3" y="7" width="10" height="7" rx="1.5" />
+                    <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+                    <rect x="3" y="7" width="10" height="7" rx="1.5" />
+                    <path d="M5.5 7V5a2.5 2.5 0 0 1 4.9-.7" />
+                  </svg>
+                )}
+              </button>
+            )}
             <button
               onClick={() => setTheming(true)}
               aria-label="Personnaliser les couleurs"

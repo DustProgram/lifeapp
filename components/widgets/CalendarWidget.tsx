@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { WidgetShell } from "@/components/grid/WidgetShell";
-import { useDashboard } from "@/lib/store";
+import { useActivePageLocked, useDashboard } from "@/lib/store";
 import type { CalendarEvent, Widget } from "@/lib/types";
 
 const timeFmt = new Intl.DateTimeFormat("fr-FR", {
@@ -12,6 +12,7 @@ const timeFmt = new Intl.DateTimeFormat("fr-FR", {
 
 export function CalendarWidget({ widget }: { widget: Widget & { type: "calendar" } }) {
   const { updateWidgetConfig } = useDashboard();
+  const locked = useActivePageLocked();
   const cfg = widget.config;
 
   const [events, setEvents] = useState<CalendarEvent[] | null>(null);
@@ -75,20 +76,22 @@ export function CalendarWidget({ widget }: { widget: Widget & { type: "calendar"
               <path d="M12 1v3h-3" />
             </svg>
           </button>
-          <button
-            onClick={() => setShowConfig((s) => !s)}
-            aria-label="Configurer le calendrier"
-            className="rounded p-1 text-muted hover:bg-card-2 hover:text-foreground"
-          >
-            <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-              <circle cx="7" cy="7" r="2" />
-              <path d="M7 1v2M7 11v2M1 7h2M11 7h2M2.8 2.8l1.4 1.4M9.8 9.8l1.4 1.4M11.2 2.8L9.8 4.2M4.2 9.8l-1.4 1.4" />
-            </svg>
-          </button>
+          {!locked && (
+            <button
+              onClick={() => setShowConfig((s) => !s)}
+              aria-label="Configurer le calendrier"
+              className="rounded p-1 text-muted hover:bg-card-2 hover:text-foreground"
+            >
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                <circle cx="7" cy="7" r="2" />
+                <path d="M7 1v2M7 11v2M1 7h2M11 7h2M2.8 2.8l1.4 1.4M9.8 9.8l1.4 1.4M11.2 2.8L9.8 4.2M4.2 9.8l-1.4 1.4" />
+              </svg>
+            </button>
+          )}
         </>
       }
     >
-      {showConfig ? (
+      {showConfig && !locked ? (
         <div className="flex flex-1 flex-col gap-2">
           <label className="flex flex-col gap-1 text-[10px] font-bold uppercase tracking-wider text-muted">
             Flux ICS (lecture seule)

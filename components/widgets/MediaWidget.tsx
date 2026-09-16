@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { WidgetShell } from "@/components/grid/WidgetShell";
-import { useDashboard } from "@/lib/store";
+import { useActivePageLocked, useDashboard } from "@/lib/store";
 import type { Widget } from "@/lib/types";
 
 const VIDEO_RE = /\.(mp4|webm|mov|m4v)(\?.*)?$/i;
@@ -112,6 +112,7 @@ function MediaPlayer({
 
 export function MediaWidget({ widget }: { widget: Widget & { type: "media" } }) {
   const { updateWidgetConfig } = useDashboard();
+  const locked = useActivePageLocked();
   const cfg = widget.config;
   const [showConfig, setShowConfig] = useState(!cfg.url);
   const [draft, setDraft] = useState(cfg.url ?? "");
@@ -141,7 +142,7 @@ export function MediaWidget({ widget }: { widget: Widget & { type: "media" } }) 
               )}
             </button>
           )}
-          {cfg.url && (
+          {cfg.url && !locked && (
             <button
               onClick={() =>
                 updateWidgetConfig(widget.id, {
@@ -158,6 +159,7 @@ export function MediaWidget({ widget }: { widget: Widget & { type: "media" } }) 
               </svg>
             </button>
           )}
+          {!locked && (
           <button
             onClick={() => {
               setDraft(cfg.url ?? "");
@@ -171,10 +173,11 @@ export function MediaWidget({ widget }: { widget: Widget & { type: "media" } }) 
               <path d="M7 1v2M7 11v2M1 7h2M11 7h2M2.8 2.8l1.4 1.4M9.8 9.8l1.4 1.4M11.2 2.8L9.8 4.2M4.2 9.8l-1.4 1.4" />
             </svg>
           </button>
+          )}
         </>
       }
     >
-      {showConfig ? (
+      {showConfig && !locked ? (
         <div className="flex flex-1 flex-col gap-2">
           <label className="flex flex-col gap-1 text-[10px] font-bold uppercase tracking-wider text-muted">
             URL du média (image · GIF · mp4/webm)

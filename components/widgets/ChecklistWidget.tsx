@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { WidgetShell } from "@/components/grid/WidgetShell";
-import { useDashboard } from "@/lib/store";
+import { useActivePageLocked, useDashboard } from "@/lib/store";
 import type { ChecklistConfig, Widget } from "@/lib/types";
 
 const uid = () =>
@@ -14,6 +14,7 @@ const todayKey = () => new Date().toISOString().slice(0, 10);
 
 export function ChecklistWidget({ widget }: { widget: Widget & { type: "checklist" } }) {
   const { updateWidgetConfig } = useDashboard();
+  const locked = useActivePageLocked();
   const cfg = widget.config;
   const [newLabel, setNewLabel] = useState("");
 
@@ -45,6 +46,7 @@ export function ChecklistWidget({ widget }: { widget: Widget & { type: "checklis
     <WidgetShell
       widget={widget}
       actions={
+        locked ? undefined : (
         <button
           onClick={() => save({ resetDaily: !cfg.resetDaily })}
           title={cfg.resetDaily ? "Reset quotidien activé" : "Reset quotidien désactivé"}
@@ -56,6 +58,7 @@ export function ChecklistWidget({ widget }: { widget: Widget & { type: "checklis
             <path d="M12 1v3h-3" />
           </svg>
         </button>
+        )
       }
     >
       <div className="mb-2 flex items-center gap-2">
@@ -100,7 +103,9 @@ export function ChecklistWidget({ widget }: { widget: Widget & { type: "checklis
             <button
               onClick={() => save({ items: cfg.items.filter((i) => i.id !== item.id) })}
               aria-label="Supprimer l'élément"
-              className="rounded p-0.5 text-muted opacity-0 hover:text-danger group-hover/item:opacity-100"
+              className={`rounded p-0.5 text-muted opacity-0 hover:text-danger group-hover/item:opacity-100 ${
+                locked ? "hidden" : ""
+              }`}
             >
               <svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                 <path d="M2.5 2.5l9 9M11.5 2.5l-9 9" />
@@ -115,7 +120,7 @@ export function ChecklistWidget({ widget }: { widget: Widget & { type: "checklis
           e.preventDefault();
           addItem();
         }}
-        className="mt-2 flex gap-1.5"
+        className={`mt-2 flex gap-1.5 ${locked ? "hidden" : ""}`}
       >
         <input
           value={newLabel}

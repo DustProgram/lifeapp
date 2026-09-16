@@ -94,6 +94,8 @@ interface DashboardState {
   updatePageTheme: (pageId: string, patch: Partial<ThemeOverride> | null) => void;
   /** Planifie/déplanifie la page pour un jour (0 = lundi … 6 = dimanche). */
   togglePageDay: (pageId: string, day: number) => void;
+  /** Verrouille/déverrouille la page (fige widgets et suppression). */
+  togglePageLock: (pageId: string) => void;
   setActivePage: (id: string | null) => void;
   addPage: (name: string, icon?: string) => void;
   addImportedPage: (page: RoutinePage) => void;
@@ -106,6 +108,12 @@ interface DashboardState {
   /** Reorder within the active page: move widget `activeId` to `overId`'s slot. */
   moveWidget: (activeId: string, overId: string) => void;
 }
+
+/** true si la page active est verrouillée (usage seul, structure figée). */
+export const useActivePageLocked = () =>
+  useDashboard(
+    (s) => s.pages.find((p) => p.id === s.activePageId)?.locked ?? false
+  );
 
 const patchActivePage = (
   state: DashboardState,
@@ -152,6 +160,13 @@ export const useDashboard = create<DashboardState>()((set) => ({
     set((s) => ({
       pages: s.pages.map((p) =>
         p.id === pageId ? { ...p, theme: mergeTheme(p.theme, patch) ?? undefined } : p
+      ),
+    })),
+
+  togglePageLock: (pageId) =>
+    set((s) => ({
+      pages: s.pages.map((p) =>
+        p.id === pageId ? { ...p, locked: !p.locked || undefined } : p
       ),
     })),
 

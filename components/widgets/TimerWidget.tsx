@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { WidgetShell } from "@/components/grid/WidgetShell";
-import { useDashboard } from "@/lib/store";
+import { useActivePageLocked, useDashboard } from "@/lib/store";
 import type { TimerConfig, Widget } from "@/lib/types";
 
 function fmt(totalSec: number): string {
@@ -53,6 +53,7 @@ function buildPhases(cfg: TimerConfig): { kind: "work" | "rest"; sec: number; se
 
 export function TimerWidget({ widget }: { widget: Widget & { type: "timer" } }) {
   const { updateWidgetConfig } = useDashboard();
+  const locked = useActivePageLocked();
   const cfg = widget.config;
 
   const [running, setRunning] = useState(false);
@@ -161,19 +162,21 @@ export function TimerWidget({ widget }: { widget: Widget & { type: "timer" } }) 
     <WidgetShell
       widget={widget}
       actions={
-        <button
-          onClick={() => setShowConfig((s) => !s)}
-          aria-label="Configurer le timer"
-          className="rounded p-1 text-muted hover:bg-card-2 hover:text-foreground"
-        >
-          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-            <circle cx="7" cy="7" r="2" />
-            <path d="M7 1v2M7 11v2M1 7h2M11 7h2M2.8 2.8l1.4 1.4M9.8 9.8l1.4 1.4M11.2 2.8L9.8 4.2M4.2 9.8l-1.4 1.4" />
-          </svg>
-        </button>
+        locked ? undefined : (
+          <button
+            onClick={() => setShowConfig((s) => !s)}
+            aria-label="Configurer le timer"
+            className="rounded p-1 text-muted hover:bg-card-2 hover:text-foreground"
+          >
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+              <circle cx="7" cy="7" r="2" />
+              <path d="M7 1v2M7 11v2M1 7h2M11 7h2M2.8 2.8l1.4 1.4M9.8 9.8l1.4 1.4M11.2 2.8L9.8 4.2M4.2 9.8l-1.4 1.4" />
+            </svg>
+          </button>
+        )
       }
     >
-      {showConfig ? (
+      {showConfig && !locked ? (
         <TimerConfigForm
           cfg={cfg}
           onSave={(c) => {

@@ -4,11 +4,12 @@ import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { WidgetShell } from "@/components/grid/WidgetShell";
-import { useDashboard } from "@/lib/store";
+import { useActivePageLocked, useDashboard } from "@/lib/store";
 import type { Widget } from "@/lib/types";
 
 export function NoteWidget({ widget }: { widget: Widget & { type: "note" } }) {
   const { updateWidget, updateWidgetConfig } = useDashboard();
+  const locked = useActivePageLocked();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(widget.config.markdown);
   const [titleDraft, setTitleDraft] = useState(widget.title);
@@ -23,6 +24,7 @@ export function NoteWidget({ widget }: { widget: Widget & { type: "note" } }) {
     <WidgetShell
       widget={widget}
       actions={
+        locked ? undefined : (
         <button
           onClick={() => {
             setDraft(widget.config.markdown);
@@ -36,9 +38,10 @@ export function NoteWidget({ widget }: { widget: Widget & { type: "note" } }) {
             <path d="M9.8 1.8l2.4 2.4L4.6 11.8l-3 .6.6-3z" strokeLinejoin="round" />
           </svg>
         </button>
+        )
       }
     >
-      {editing ? (
+      {editing && !locked ? (
         <div className="flex flex-1 flex-col gap-2">
           <input
             value={titleDraft}

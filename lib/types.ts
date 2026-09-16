@@ -88,6 +88,8 @@ export interface RoutinePage {
   theme?: ThemeOverride;
   /** Jours de la semaine où la page est planifiée (0 = lundi … 6 = dimanche). */
   days?: number[];
+  /** Page verrouillée : l'usage reste possible, la structure est figée. */
+  locked?: boolean;
   widgets: Widget[];
 }
 

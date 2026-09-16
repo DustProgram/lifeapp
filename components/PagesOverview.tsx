@@ -146,6 +146,11 @@ export function PagesOverview() {
               <span className="text-3xl" aria-hidden>
                 {p.icon ?? "▦"}
               </span>
+              {p.locked && (
+                <span className="text-xs" aria-label="Page verrouillée" title="Page verrouillée">
+                  🔒
+                </span>
+              )}
               <span className="flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
                 <button
                   onClick={(e) => {
@@ -163,6 +168,12 @@ export function PagesOverview() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
+                    if (p.locked) {
+                      window.alert(
+                        "Page verrouillée : déverrouille-la (menu 🔒 de la page) avant de la supprimer."
+                      );
+                      return;
+                    }
                     if (window.confirm(`Supprimer la page « ${p.name} » ?`)) {
                       removePage(p.id);
                     }
