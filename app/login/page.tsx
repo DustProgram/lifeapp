@@ -114,8 +114,6 @@ export default function LoginPage() {
 
         <p className="mt-4 text-center text-[11px] leading-relaxed text-muted">
           Authentification déléguée à ton instance Home Assistant.
-          <br />
-          Chaque tentative est consignée dans le journal de sécurité.
         </p>
       </div>
     </div>

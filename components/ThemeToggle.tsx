@@ -30,7 +30,7 @@ export function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={dark ? "Passer en mode clair" : "Passer en mode sombre"}
-      className="flex h-8 w-8 items-center justify-center rounded-lg border-2 border-line bg-card text-sm hover:bg-card-2"
+      className="flex h-9 w-9 items-center justify-center rounded-lg border-2 border-line bg-card text-sm hover:bg-card-2"
     >
       {mounted ? (dark ? "☾" : "☀") : "·"}
     </button>

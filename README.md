@@ -61,18 +61,23 @@ npm start                    # écoute sur :3000
 
 ## Fonctionnalités
 
-### Authentification & journal de sécurité
-La connexion est déléguée à Home Assistant via son API `login_flow` (celle des
-apps mobiles officielles) : tes identifiants HA fonctionnent tels quels, aucun
-token n'est stocké. Chaque tentative (réussie ou non) est consignée dans
-`data/auth-log.jsonl` et consultable dans l'app (`/logs`) : date, utilisateur,
-IP, user-agent, résultat.
+### Authentification, multi-utilisateur & journal de sécurité
+La connexion est déléguée à Home Assistant (API Supervisor en add-on, avec
+repli sur le `login_flow` des apps mobiles) : les identifiants HA fonctionnent
+tels quels, aucun token n'est stocké. **Chaque utilisateur a son propre
+dashboard**, stocké côté serveur (`data/dashboards/`) et donc retrouvé depuis
+n'importe quel appareil. Chaque tentative de connexion (réussie ou non) est
+consignée dans `data/auth-log.jsonl` et visible dans les logs du serveur
+(onglet Journal de l'add-on) : date, utilisateur, IP, user-agent, résultat.
 
 Les comptes HA avec double authentification (TOTP) sont supportés : le
 formulaire demande automatiquement le code de validation quand HA l'exige.
 
 ### Dashboard modulaire
-- Pages multiples (onglets) : une page par routine.
+- Pages multiples : une page par routine ; le logo ▦ ouvre la **vue
+  d'ensemble** de toutes les pages sous forme de cartes.
+- Interface adaptée au téléphone (barre compacte, menu ⋮, drag & drop
+  tactile par appui long) ; installable sur l'écran d'accueil (PWA).
 - Widgets déplaçables (poignée ⠿), redimensionnables (sm/md/lg), supprimables.
 - **Bloc texte** : Markdown complet.
 - **Timer** : chrono libre, minuteur, ou mode *séries* (effort/repos × N) avec

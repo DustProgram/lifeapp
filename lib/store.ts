@@ -1,7 +1,6 @@
 "use client";
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import type { RoutinePage, Widget, WidgetSize, WidgetType } from "./types";
 
 const uid = () =>
@@ -55,7 +54,7 @@ const welcomePage: RoutinePage = {
       size: "md",
       config: {
         markdown:
-          "## LifeOS\n\nTon espace personnel modulaire.\n\n- **＋ Widget** pour ajouter un bloc\n- **Importer** pour coller une routine JSON générée par une IA\n- Glisse les cartes pour réorganiser la grille",
+          "## LifeOS\n\nTon espace personnel modulaire.\n\n- **＋ Widget** pour ajouter un bloc\n- **Importer** pour coller une routine JSON générée par une IA\n- Touche le logo ▦ pour voir toutes tes pages\n- Glisse les cartes pour réorganiser la grille",
       },
     },
     {
@@ -70,8 +69,12 @@ const welcomePage: RoutinePage = {
 
 interface DashboardState {
   pages: RoutinePage[];
-  activePageId: string;
-  setActivePage: (id: string) => void;
+  /** null = vue d'ensemble (toutes les pages). */
+  activePageId: string | null;
+  /** true une fois l'état chargé depuis le serveur. */
+  hydrated: boolean;
+  hydrate: (state: { pages: RoutinePage[]; activePageId: string | null } | null) => void;
+  setActivePage: (id: string | null) => void;
   addPage: (name: string, icon?: string) => void;
   addImportedPage: (page: RoutinePage) => void;
   renamePage: (id: string, name: string) => void;
@@ -91,88 +94,90 @@ const patchActivePage = (
   pages: state.pages.map((p) => (p.id === state.activePageId ? fn(p) : p)),
 });
 
-export const useDashboard = create<DashboardState>()(
-  persist(
-    (set) => ({
-      pages: [welcomePage],
-      activePageId: welcomePage.id,
+export const useDashboard = create<DashboardState>()((set) => ({
+  pages: [welcomePage],
+  activePageId: welcomePage.id,
+  hydrated: false,
 
-      setActivePage: (id) => set({ activePageId: id }),
+  hydrate: (state) =>
+    set(
+      state && Array.isArray(state.pages) && state.pages.length > 0
+        ? { pages: state.pages, activePageId: state.activePageId, hydrated: true }
+        : { hydrated: true }
+    ),
 
-      addPage: (name, icon) =>
-        set((s) => {
-          const page: RoutinePage = { id: uid(), name, icon, widgets: [] };
-          return { pages: [...s.pages, page], activePageId: page.id };
-        }),
+  setActivePage: (id) => set({ activePageId: id }),
 
-      addImportedPage: (page) =>
-        set((s) => ({ pages: [...s.pages, page], activePageId: page.id })),
-
-      renamePage: (id, name) =>
-        set((s) => ({
-          pages: s.pages.map((p) => (p.id === id ? { ...p, name } : p)),
-        })),
-
-      removePage: (id) =>
-        set((s) => {
-          const pages = s.pages.filter((p) => p.id !== id);
-          if (pages.length === 0) pages.push({ ...welcomePage, widgets: [] });
-          return {
-            pages,
-            activePageId:
-              s.activePageId === id ? pages[0].id : s.activePageId,
-          };
-        }),
-
-      addWidget: (type) =>
-        set((s) =>
-          patchActivePage(s, (p) => ({
-            ...p,
-            widgets: [...p.widgets, defaultWidget(type)],
-          }))
-        ),
-
-      updateWidget: (id, patch) =>
-        set((s) =>
-          patchActivePage(s, (p) => ({
-            ...p,
-            widgets: p.widgets.map((w) =>
-              w.id === id ? ({ ...w, ...patch } as Widget) : w
-            ),
-          }))
-        ),
-
-      updateWidgetConfig: (id, config) =>
-        set((s) =>
-          patchActivePage(s, (p) => ({
-            ...p,
-            widgets: p.widgets.map((w) =>
-              w.id === id ? ({ ...w, config } as Widget) : w
-            ),
-          }))
-        ),
-
-      removeWidget: (id) =>
-        set((s) =>
-          patchActivePage(s, (p) => ({
-            ...p,
-            widgets: p.widgets.filter((w) => w.id !== id),
-          }))
-        ),
-
-      moveWidget: (activeId, overId) =>
-        set((s) =>
-          patchActivePage(s, (p) => {
-            const from = p.widgets.findIndex((w) => w.id === activeId);
-            const to = p.widgets.findIndex((w) => w.id === overId);
-            if (from < 0 || to < 0 || from === to) return p;
-            const widgets = [...p.widgets];
-            const [moved] = widgets.splice(from, 1);
-            widgets.splice(to, 0, moved);
-            return { ...p, widgets };
-          })
-        ),
+  addPage: (name, icon) =>
+    set((s) => {
+      const page: RoutinePage = { id: uid(), name, icon, widgets: [] };
+      return { pages: [...s.pages, page], activePageId: page.id };
     }),
-    { name: "lifeos-dashboard", version: 1 }
-  )
-);
+
+  addImportedPage: (page) =>
+    set((s) => ({ pages: [...s.pages, page], activePageId: page.id })),
+
+  renamePage: (id, name) =>
+    set((s) => ({
+      pages: s.pages.map((p) => (p.id === id ? { ...p, name } : p)),
+    })),
+
+  removePage: (id) =>
+    set((s) => {
+      const pages = s.pages.filter((p) => p.id !== id);
+      if (pages.length === 0) pages.push({ ...welcomePage, widgets: [] });
+      return {
+        pages,
+        activePageId: s.activePageId === id ? null : s.activePageId,
+      };
+    }),
+
+  addWidget: (type) =>
+    set((s) =>
+      patchActivePage(s, (p) => ({
+        ...p,
+        widgets: [...p.widgets, defaultWidget(type)],
+      }))
+    ),
+
+  updateWidget: (id, patch) =>
+    set((s) =>
+      patchActivePage(s, (p) => ({
+        ...p,
+        widgets: p.widgets.map((w) =>
+          w.id === id ? ({ ...w, ...patch } as Widget) : w
+        ),
+      }))
+    ),
+
+  updateWidgetConfig: (id, config) =>
+    set((s) =>
+      patchActivePage(s, (p) => ({
+        ...p,
+        widgets: p.widgets.map((w) =>
+          w.id === id ? ({ ...w, config } as Widget) : w
+        ),
+      }))
+    ),
+
+  removeWidget: (id) =>
+    set((s) =>
+      patchActivePage(s, (p) => ({
+        ...p,
+        widgets: p.widgets.filter((w) => w.id !== id),
+      }))
+    ),
+
+  moveWidget: (activeId, overId) =>
+    set((s) =>
+      patchActivePage(s, (p) => {
+        const from = p.widgets.findIndex((w) => w.id === activeId);
+        const to = p.widgets.findIndex((w) => w.id === overId);
+        if (from < 0 || to < 0 || from === to) return p;
+        const widgets = [...p.widgets];
+        const [moved] = widgets.splice(from, 1);
+        widgets.splice(to, 0, moved);
+        return { ...p, widgets };
+      })
+    ),
+}));

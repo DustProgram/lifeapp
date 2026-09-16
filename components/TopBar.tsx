@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ImportDialog } from "@/components/ImportDialog";
@@ -15,30 +14,39 @@ const WIDGET_TYPES: { type: WidgetType; label: string; hint: string }[] = [
   { type: "calendar", label: "Calendrier", hint: "Événements du jour" },
 ];
 
+function useClickOutside(open: boolean, onClose: () => void) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: MouseEvent | TouchEvent) => {
+      if (!ref.current?.contains(e.target as Node)) onClose();
+    };
+    document.addEventListener("mousedown", close);
+    document.addEventListener("touchstart", close);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("touchstart", close);
+    };
+  }, [open, onClose]);
+  return ref;
+}
+
 function AddWidgetMenu() {
   const { addWidget } = useDashboard();
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const close = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
-  }, [open]);
+  const ref = useClickOutside(open, () => setOpen(false));
 
   return (
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex h-8 items-center gap-1.5 rounded-lg border-2 border-line bg-accent px-3 text-xs font-bold text-accent-ink shadow-brutal-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+        aria-label="Ajouter un widget"
+        className="flex h-9 items-center gap-1.5 rounded-lg border-2 border-line bg-accent px-3 text-sm font-bold text-accent-ink shadow-brutal-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
       >
-        ＋ Widget
+        ＋<span className="hidden sm:inline text-xs">Widget</span>
       </button>
       {open && (
-        <div className="absolute right-0 top-10 z-40 w-56 overflow-hidden rounded-xl border-2 border-line bg-card shadow-brutal">
+        <div className="absolute right-0 top-11 z-40 w-56 overflow-hidden rounded-xl border-2 border-line bg-card shadow-brutal">
           {WIDGET_TYPES.map((w) => (
             <button
               key={w.type}
@@ -63,7 +71,7 @@ function PageTabs() {
     useDashboard();
 
   return (
-    <nav className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
+    <nav className="hidden min-w-0 flex-1 items-center gap-1 overflow-x-auto md:flex">
       {pages.map((p) => {
         const active = p.id === activePageId;
         return (
@@ -76,12 +84,12 @@ function PageTabs() {
             }}
             onContextMenu={(e) => {
               e.preventDefault();
-              if (pages.length > 1 && window.confirm(`Supprimer la page « ${p.name} » ?`)) {
+              if (window.confirm(`Supprimer la page « ${p.name} » ?`)) {
                 removePage(p.id);
               }
             }}
             title="Double-clic : renommer · Clic droit : supprimer"
-            className={`flex h-8 shrink-0 items-center gap-1.5 rounded-lg border-2 px-3 text-xs font-bold transition-colors ${
+            className={`flex h-9 shrink-0 items-center gap-1.5 rounded-lg border-2 px-3 text-xs font-bold transition-colors ${
               active
                 ? "border-line bg-card shadow-brutal-sm"
                 : "border-transparent text-muted hover:border-line-soft hover:text-foreground"
@@ -98,7 +106,7 @@ function PageTabs() {
           if (name?.trim()) addPage(name.trim());
         }}
         aria-label="Nouvelle page"
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-line-soft text-muted hover:border-line hover:text-foreground"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-line-soft text-muted hover:border-line hover:text-foreground"
       >
         ＋
       </button>
@@ -106,9 +114,63 @@ function PageTabs() {
   );
 }
 
+/** Menu ⋮ (mobile) : les actions secondaires regroupées. */
+function OverflowMenu({
+  onImport,
+  onLogout,
+}: {
+  onImport: () => void;
+  onLogout: () => void;
+}) {
+  const { setActivePage } = useDashboard();
+  const [open, setOpen] = useState(false);
+  const ref = useClickOutside(open, () => setOpen(false));
+  const item =
+    "flex w-full items-center gap-2 border-b border-line-soft px-3 py-2.5 text-left text-sm font-semibold last:border-b-0 hover:bg-card-2";
+
+  return (
+    <div ref={ref} className="relative md:hidden">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Menu"
+        className="flex h-9 w-9 items-center justify-center rounded-lg border-2 border-line bg-card text-lg leading-none hover:bg-card-2"
+      >
+        ⋮
+      </button>
+      {open && (
+        <div className="absolute right-0 top-11 z-40 w-52 overflow-hidden rounded-xl border-2 border-line bg-card shadow-brutal">
+          <button
+            className={item}
+            onClick={() => {
+              setActivePage(null);
+              setOpen(false);
+            }}
+          >
+            ▦ Toutes les pages
+          </button>
+          <button
+            className={item}
+            onClick={() => {
+              onImport();
+              setOpen(false);
+            }}
+          >
+            📥 Importer une routine
+          </button>
+          <button className={`${item} hover:text-danger`} onClick={onLogout}>
+            ↩ Se déconnecter
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function TopBar() {
   const router = useRouter();
   const [importing, setImporting] = useState(false);
+  const { pages, activePageId, setActivePage } = useDashboard();
+  const activePage = pages.find((p) => p.id === activePageId);
 
   const logout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -119,49 +181,67 @@ export function TopBar() {
   return (
     <>
       <header className="sticky top-0 z-30 border-b-2 border-line bg-background/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3">
-          <Link href="/" className="flex shrink-0 items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg border-2 border-line bg-accent font-mono text-sm font-black text-accent-ink shadow-brutal-sm">
+        <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-2.5 sm:gap-3 sm:py-3">
+          {/* Logo → vue d'ensemble de toutes les pages */}
+          <button
+            onClick={() => setActivePage(null)}
+            aria-label="Toutes les pages"
+            className="flex shrink-0 items-center gap-2"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg border-2 border-line bg-accent font-mono text-sm font-black text-accent-ink shadow-brutal-sm">
               ▦
             </span>
-            <span className="hidden text-sm font-black tracking-tight sm:block">
+            <span className="hidden text-sm font-black tracking-tight lg:block">
               LifeOS
             </span>
-          </Link>
+          </button>
 
+          {/* Mobile : nom de la page courante, tape → vue d'ensemble */}
+          <button
+            onClick={() => setActivePage(null)}
+            className="flex h-9 min-w-0 flex-1 items-center gap-1.5 rounded-lg px-2 text-left md:hidden"
+          >
+            <span className="truncate text-sm font-bold">
+              {activePage ? (
+                <>
+                  {activePage.icon && <span aria-hidden>{activePage.icon} </span>}
+                  {activePage.name}
+                </>
+              ) : (
+                "Toutes les pages"
+              )}
+            </span>
+            {activePage && (
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="shrink-0 text-muted" aria-hidden>
+                <path d="M2 4l3 3 3-3" />
+              </svg>
+            )}
+          </button>
+
+          {/* Desktop : onglets */}
           <PageTabs />
 
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             <button
               onClick={() => setImporting(true)}
-              className="flex h-8 items-center rounded-lg border-2 border-line bg-card px-3 text-xs font-bold hover:bg-card-2"
+              className="hidden h-9 items-center rounded-lg border-2 border-line bg-card px-3 text-xs font-bold hover:bg-card-2 md:flex"
             >
               Importer
             </button>
-            <AddWidgetMenu />
+            {activePageId !== null && <AddWidgetMenu />}
             <ThemeToggle />
-            <Link
-              href="/logs"
-              aria-label="Journal de sécurité"
-              title="Journal de connexions"
-              className="flex h-8 w-8 items-center justify-center rounded-lg border-2 border-line bg-card text-sm hover:bg-card-2"
-            >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden>
-                <rect x="3" y="1.5" width="10" height="13" rx="1.5" />
-                <path d="M6 5h4M6 8h4M6 11h2.5" />
-              </svg>
-            </Link>
             <button
               onClick={logout}
               aria-label="Se déconnecter"
               title="Se déconnecter"
-              className="flex h-8 w-8 items-center justify-center rounded-lg border-2 border-line bg-card text-sm hover:bg-card-2 hover:text-danger"
+              className="hidden h-9 w-9 items-center justify-center rounded-lg border-2 border-line bg-card text-sm hover:bg-card-2 hover:text-danger md:flex"
             >
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M6 14H3.5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1H6" />
                 <path d="M10.5 11.5L14 8l-3.5-3.5M14 8H6" />
               </svg>
             </button>
+            <OverflowMenu onImport={() => setImporting(true)} onLogout={logout} />
           </div>
         </div>
       </header>

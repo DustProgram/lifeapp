@@ -20,8 +20,11 @@ valide auprès de HA (API Supervisor, avec repli sur le `login_flow`
 officiel), rien n'est stocké. Si ton compte a la **double authentification**,
 un champ « code de validation » apparaît automatiquement — entre le code à
 6 chiffres de ton app (Mots de passe Apple, Google Authenticator…).
-Chaque tentative de connexion (réussie ou non) est consignée dans le journal
-de sécurité, consultable dans l'app via l'icône 📋 (`/logs`).
+
+**Chaque utilisateur HA a son propre dashboard** (pages et widgets), stocké
+dans `/data/dashboards/` et retrouvé depuis n'importe quel appareil.
+Les tentatives de connexion sont consignées dans `/data/auth-log.jsonl` et
+visibles dans l'onglet **Journal** de l'add-on.
 
 ## Dans la barre latérale HA (optionnel)
 

@@ -15,6 +15,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "LifeOS",
   description: "Personal Life OS & Routine Hub — widgets, routines, chronos.",
+  appleWebApp: { capable: true, title: "LifeOS", statusBarStyle: "black-translucent" },
+  icons: { apple: "/icon-192.png" },
 };
 
 export const viewport: Viewport = {
