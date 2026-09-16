@@ -1,6 +1,6 @@
 // Core domain types for the LifeOS dashboard.
 
-export type WidgetType = "note" | "timer" | "checklist" | "calendar";
+export type WidgetType = "note" | "timer" | "checklist" | "calendar" | "media";
 
 /** Column span in the dashboard grid: sm = 1 col, md = 2 cols, lg = full row. */
 export type WidgetSize = "sm" | "md" | "lg";
@@ -37,6 +37,15 @@ export interface ChecklistConfig {
   lastReset?: string;
 }
 
+export interface MediaConfig {
+  /** URL directe d'une image, d'un GIF ou d'une vidéo (mp4/webm). */
+  url?: string;
+  /** Lire le son de la vidéo (false = muet, valeur par défaut). */
+  sound: boolean;
+  /** Remplir la carte (cover) ou montrer le média entier (contain). */
+  fit: "cover" | "contain";
+}
+
 export interface CalendarConfig {
   /** Private ICS feed URL (Google "secret address", iCloud public link, …). */
   icsUrl?: string;
@@ -56,6 +65,7 @@ export type Widget = WidgetBase &
     | { type: "timer"; config: TimerConfig }
     | { type: "checklist"; config: ChecklistConfig }
     | { type: "calendar"; config: CalendarConfig }
+    | { type: "media"; config: MediaConfig }
   );
 
 /**
@@ -76,6 +86,8 @@ export interface RoutinePage {
   icon?: string;
   /** Palette propre à la page ; prime sur le thème de l'interface. */
   theme?: ThemeOverride;
+  /** Jours de la semaine où la page est planifiée (0 = lundi … 6 = dimanche). */
+  days?: number[];
   widgets: Widget[];
 }
 

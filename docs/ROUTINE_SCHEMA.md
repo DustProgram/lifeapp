@@ -38,6 +38,7 @@ créée avec tous les widgets configurés, prêts à l'emploi.
 | `routine.icon` | string ≤ 8 | — | Un emoji pour l'onglet. |
 | `routine.description` | string ≤ 500 | — | Réservé (non affiché pour l'instant). |
 | `routine.theme` | objet | — | Palette de la page : `background`, `card`, `foreground`, `line`, `accent` en hex `#rrggbb`. Tout champ absent hérite du thème de l'utilisateur. Ex. `{ "accent": "#7aa2ff", "background": "#0a0f1e" }`. |
+| `routine.days` | array | — | Jours de la semaine où la routine est planifiée, récurrents chaque semaine : `0` = lundi … `6` = dimanche. Ex. Push Day lundi et jeudi : `[0, 3]`. |
 | `widgets[]` | array | ✔ | Les widgets, dans l'ordre de la grille. |
 
 Chaque widget partage trois champs :
@@ -101,6 +102,27 @@ sonores aux transitions — idéal pour un programme de musculation.
 
 Les items acceptent la forme courte (string) ou objet. `resetDaily: true`
 (défaut) décoche tout automatiquement chaque nouveau jour.
+
+### `media` — photo, GIF ou vidéo en boucle
+
+```json
+{
+  "type": "media",
+  "title": "Démo : développé couché",
+  "size": "sm",
+  "config": {
+    "url": "https://media.giphy.com/media/xxxxx/giphy.mp4",
+    "sound": false,
+    "fit": "cover"
+  }
+}
+```
+
+`url` pointe **directement** vers une image, un GIF ou une vidéo (mp4/webm) —
+idéal pour montrer le geste d'un exercice. La lecture boucle, est muette par
+défaut (`sound`), et **se coupe automatiquement quand le widget n'est plus à
+l'écran** (aucune consommation en fond). Préférer la version `.mp4` d'un GIF,
+beaucoup plus légère.
 
 ### `calendar` — événements du jour (lecture seule)
 

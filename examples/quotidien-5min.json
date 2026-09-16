@@ -3,7 +3,16 @@
   "routine": {
     "name": "Quotidien 5 min",
     "icon": "⚡",
-    "description": "Bloc quotidien — même les jours de repos"
+    "description": "Bloc quotidien — même les jours de repos",
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
   },
   "widgets": [
     {
@@ -24,13 +33,23 @@
       "type": "timer",
       "title": "Planche 2 × 30 s",
       "size": "sm",
-      "config": { "mode": "interval", "sets": 2, "workSec": 30, "restSec": 30 }
+      "config": {
+        "mode": "interval",
+        "sets": 2,
+        "workSec": 30,
+        "restSec": 30
+      }
     },
     {
       "type": "timer",
       "title": "Étirements 4 × 30 s",
       "size": "sm",
-      "config": { "mode": "interval", "sets": 4, "workSec": 30, "restSec": 5 }
+      "config": {
+        "mode": "interval",
+        "sets": 4,
+        "workSec": 30,
+        "restSec": 5
+      }
     },
     {
       "type": "calendar",

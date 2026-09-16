@@ -13,6 +13,7 @@ const WIDGET_TYPES: { type: WidgetType; label: string; hint: string }[] = [
   { type: "timer", label: "Timer", hint: "Chrono · minuteur · séries" },
   { type: "checklist", label: "Check-list", hint: "Routine quotidienne" },
   { type: "calendar", label: "Calendrier", hint: "Événements du jour" },
+  { type: "media", label: "Média", hint: "Photo · GIF · vidéo en boucle" },
 ];
 
 function useClickOutside(open: boolean, onClose: () => void) {

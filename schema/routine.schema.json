@@ -16,7 +16,14 @@
         "name": { "type": "string", "minLength": 1, "maxLength": 60 },
         "icon": { "type": "string", "maxLength": 8, "description": "Un emoji affiché dans l'onglet de la page." },
         "description": { "type": "string", "maxLength": 500 },
-        "theme": { "$ref": "#/$defs/theme" }
+        "theme": { "$ref": "#/$defs/theme" },
+        "days": {
+          "type": "array",
+          "maxItems": 7,
+          "uniqueItems": true,
+          "items": { "type": "integer", "minimum": 0, "maximum": 6 },
+          "description": "Jours de la semaine où la routine est planifiée (0 = lundi … 6 = dimanche). Récurrent chaque semaine."
+        }
       }
     },
     "widgets": {
@@ -28,7 +35,8 @@
           { "$ref": "#/$defs/noteWidget" },
           { "$ref": "#/$defs/timerWidget" },
           { "$ref": "#/$defs/checklistWidget" },
-          { "$ref": "#/$defs/calendarWidget" }
+          { "$ref": "#/$defs/calendarWidget" },
+          { "$ref": "#/$defs/mediaWidget" }
         ]
       }
     }
@@ -148,6 +156,29 @@
               "default": true,
               "description": "Décoche automatiquement tous les éléments chaque nouveau jour."
             }
+          }
+        }
+      }
+    },
+    "mediaWidget": {
+      "type": "object",
+      "required": ["type", "title"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "media" },
+        "title": { "$ref": "#/$defs/title" },
+        "size": { "$ref": "#/$defs/size" },
+        "config": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL directe d'une image, d'un GIF ou d'une vidéo (mp4/webm). La lecture boucle et se coupe hors écran."
+            },
+            "sound": { "type": "boolean", "default": false, "description": "Lire le son de la vidéo." },
+            "fit": { "type": "string", "enum": ["cover", "contain"], "default": "cover" }
           }
         }
       }

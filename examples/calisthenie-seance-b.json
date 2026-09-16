@@ -3,7 +3,10 @@
   "routine": {
     "name": "Séance B",
     "icon": "🅱️",
-    "description": "Calisthénie — tirage et chaîne postérieure (30-40 min)"
+    "description": "Calisthénie — tirage et chaîne postérieure (30-40 min)",
+    "days": [
+      2
+    ]
   },
   "widgets": [
     {
@@ -18,14 +21,22 @@
       "type": "timer",
       "title": "Échauffement — 5 min",
       "size": "sm",
-      "config": { "mode": "countdown", "durationSec": 300 }
+      "config": {
+        "mode": "countdown",
+        "durationSec": 300
+      }
     },
     {
       "type": "checklist",
       "title": "Tirage australien 4 × 6-10",
       "size": "sm",
       "config": {
-        "items": ["Série 1", "Série 2", "Série 3", "Série 4"],
+        "items": [
+          "Série 1",
+          "Série 2",
+          "Série 3",
+          "Série 4"
+        ],
         "resetDaily": true
       }
     },
@@ -33,31 +44,62 @@
       "type": "checklist",
       "title": "Tractions négatives 3 × 3",
       "size": "sm",
-      "config": { "items": ["Série 1", "Série 2", "Série 3"], "resetDaily": true }
+      "config": {
+        "items": [
+          "Série 1",
+          "Série 2",
+          "Série 3"
+        ],
+        "resetDaily": true
+      }
     },
     {
       "type": "checklist",
       "title": "Hip thrust 1 jambe 3 × 12/côté",
       "size": "sm",
-      "config": { "items": ["Série 1", "Série 2", "Série 3"], "resetDaily": true }
+      "config": {
+        "items": [
+          "Série 1",
+          "Série 2",
+          "Série 3"
+        ],
+        "resetDaily": true
+      }
     },
     {
       "type": "checklist",
       "title": "Superman 3 × 12",
       "size": "sm",
-      "config": { "items": ["Série 1", "Série 2", "Série 3"], "resetDaily": true }
+      "config": {
+        "items": [
+          "Série 1",
+          "Série 2",
+          "Série 3"
+        ],
+        "resetDaily": true
+      }
     },
     {
       "type": "timer",
       "title": "Gainage latéral 3 × 25 s/côté",
       "size": "sm",
-      "config": { "mode": "interval", "sets": 6, "workSec": 25, "restSec": 20 }
+      "config": {
+        "mode": "interval",
+        "sets": 6,
+        "workSec": 25,
+        "restSec": 20
+      }
     },
     {
       "type": "timer",
       "title": "Étirements — 5 × 45 s",
       "size": "sm",
-      "config": { "mode": "interval", "sets": 5, "workSec": 45, "restSec": 10 }
+      "config": {
+        "mode": "interval",
+        "sets": 5,
+        "workSec": 45,
+        "restSec": 10
+      }
     }
   ]
 }

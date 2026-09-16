@@ -10,6 +10,7 @@ const TYPE_GLYPH: Record<WidgetType, string> = {
   timer: "⏱",
   checklist: "☑️",
   calendar: "📅",
+  media: "🎬",
 };
 
 function pageSummary(page: RoutinePage): string {
@@ -21,6 +22,100 @@ function pageSummary(page: RoutinePage): string {
   );
 }
 
+export const DAY_LABELS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+
+/** Index du jour courant, semaine commençant lundi (0). */
+const todayIndex = () => (new Date().getDay() + 6) % 7;
+
+/** Planning hebdomadaire récurrent : chaque colonne liste les pages du jour. */
+function WeekPlanner() {
+  const { pages, setActivePage } = useDashboard();
+  const today = todayIndex();
+  if (!pages.some((p) => p.days?.length)) return null;
+
+  return (
+    <div className="mb-6">
+      <h2 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-muted">
+        Ma semaine
+      </h2>
+      <div className="grid grid-cols-7 gap-1.5 overflow-x-auto sm:gap-2">
+        {DAY_LABELS.map((label, day) => {
+          const dayPages = pages.filter((p) => p.days?.includes(day));
+          const isToday = day === today;
+          return (
+            <div
+              key={day}
+              className={`min-w-0 rounded-xl border-2 p-1.5 sm:p-2 ${
+                isToday ? "border-line bg-card shadow-brutal-sm" : "border-line-soft"
+              }`}
+            >
+              <p
+                className={`mb-1.5 text-center font-mono text-[10px] font-bold uppercase ${
+                  isToday ? "text-foreground" : "text-muted"
+                }`}
+              >
+                {label}
+              </p>
+              <div className="space-y-1">
+                {dayPages.length === 0 ? (
+                  <p className="text-center text-[10px] text-muted">·</p>
+                ) : (
+                  dayPages.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => setActivePage(p.id)}
+                      title={p.name}
+                      className={`flex w-full items-center justify-center gap-1 truncate rounded-lg border px-1 py-1 text-[11px] font-semibold sm:justify-start sm:px-1.5 ${
+                        isToday
+                          ? "border-line bg-accent text-accent-ink"
+                          : "border-line-soft bg-card hover:border-line"
+                      }`}
+                    >
+                      <span aria-hidden>{p.icon ?? "▦"}</span>
+                      <span className="hidden truncate sm:inline">{p.name}</span>
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/** Pastilles L→D sur une carte : planifie la page sur les jours choisis. */
+function DayDots({ page }: { page: RoutinePage }) {
+  const { togglePageDay } = useDashboard();
+  const today = todayIndex();
+  return (
+    <div className="mt-2 flex gap-1" onClick={(e) => e.stopPropagation()}>
+      {DAY_LABELS.map((label, day) => {
+        const active = page.days?.includes(day);
+        return (
+          <button
+            key={day}
+            onClick={() => togglePageDay(page.id, day)}
+            aria-label={`${active ? "Retirer de" : "Planifier"} ${label}`}
+            aria-pressed={active}
+            title={label}
+            className={`flex h-5 w-5 items-center justify-center rounded-full border text-[9px] font-bold transition-colors ${
+              active
+                ? "border-line bg-accent text-accent-ink"
+                : day === today
+                  ? "border-line text-muted hover:text-foreground"
+                  : "border-line-soft text-muted hover:border-line hover:text-foreground"
+            }`}
+          >
+            {label[0]}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 /** Vue d'ensemble : toutes les pages sous forme de cartes (icône ▦). */
 export function PagesOverview() {
   const { pages, setActivePage, addPage, renamePage, removePage } = useDashboard();
@@ -28,10 +123,12 @@ export function PagesOverview() {
 
   return (
     <>
+      <WeekPlanner />
       <div className="mb-4">
         <h1 className="text-lg font-black tracking-tight">Toutes les pages</h1>
         <p className="text-xs text-muted">
-          Touche une carte pour ouvrir la routine.
+          Touche une carte pour ouvrir la routine · les pastilles L→D la
+          planifient dans la semaine.
         </p>
       </div>
 
@@ -82,6 +179,7 @@ export function PagesOverview() {
             <div>
               <p className="truncate text-sm font-bold">{p.name}</p>
               <p className="mt-0.5 text-[11px] text-muted">{pageSummary(p)}</p>
+              <DayDots page={p} />
             </div>
           </div>
         ))}

@@ -19,6 +19,7 @@ import { useDashboard } from "@/lib/store";
 import type { Widget } from "@/lib/types";
 import { CalendarWidget } from "@/components/widgets/CalendarWidget";
 import { ChecklistWidget } from "@/components/widgets/ChecklistWidget";
+import { MediaWidget } from "@/components/widgets/MediaWidget";
 import { NoteWidget } from "@/components/widgets/NoteWidget";
 import { TimerWidget } from "@/components/widgets/TimerWidget";
 
@@ -32,6 +33,8 @@ function WidgetBody({ widget }: { widget: Widget }) {
       return <ChecklistWidget widget={widget} />;
     case "calendar":
       return <CalendarWidget widget={widget} />;
+    case "media":
+      return <MediaWidget widget={widget} />;
   }
 }
 

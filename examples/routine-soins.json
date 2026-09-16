@@ -3,7 +3,16 @@
   "routine": {
     "name": "Soins",
     "icon": "🧴",
-    "description": "Visage, rasage, cheveux — zéro poil incarné, zéro tache"
+    "description": "Visage, rasage, cheveux — zéro poil incarné, zéro tache",
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
   },
   "widgets": [
     {
@@ -74,7 +83,10 @@
       "type": "timer",
       "title": "Pose après-shampoing",
       "size": "sm",
-      "config": { "mode": "countdown", "durationSec": 240 }
+      "config": {
+        "mode": "countdown",
+        "durationSec": 240
+      }
     },
     {
       "type": "checklist",

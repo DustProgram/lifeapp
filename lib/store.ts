@@ -39,6 +39,13 @@ function defaultWidget(type: WidgetType): Widget {
       };
     case "calendar":
       return { ...base, type, title: "Aujourd'hui", config: {} };
+    case "media":
+      return {
+        ...base,
+        type,
+        title: "Média",
+        config: { sound: false, fit: "cover" },
+      };
   }
 }
 
@@ -85,6 +92,8 @@ interface DashboardState {
   /** patch=null réinitialise ; une valeur undefined dans le patch efface la clé. */
   updateAppTheme: (patch: Partial<ThemeOverride> | null) => void;
   updatePageTheme: (pageId: string, patch: Partial<ThemeOverride> | null) => void;
+  /** Planifie/déplanifie la page pour un jour (0 = lundi … 6 = dimanche). */
+  togglePageDay: (pageId: string, day: number) => void;
   setActivePage: (id: string | null) => void;
   addPage: (name: string, icon?: string) => void;
   addImportedPage: (page: RoutinePage) => void;
@@ -144,6 +153,17 @@ export const useDashboard = create<DashboardState>()((set) => ({
       pages: s.pages.map((p) =>
         p.id === pageId ? { ...p, theme: mergeTheme(p.theme, patch) ?? undefined } : p
       ),
+    })),
+
+  togglePageDay: (pageId, day) =>
+    set((s) => ({
+      pages: s.pages.map((p) => {
+        if (p.id !== pageId) return p;
+        const days = p.days?.includes(day)
+          ? p.days.filter((d) => d !== day)
+          : [...(p.days ?? []), day].sort((a, b) => a - b);
+        return { ...p, days: days.length > 0 ? days : undefined };
+      }),
     })),
 
   setActivePage: (id) => set({ activePageId: id }),

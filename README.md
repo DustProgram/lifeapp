@@ -85,6 +85,11 @@ formulaire demande automatiquement le code de validation quand HA l'exige.
 - **Check-list** : progression, reset automatique chaque jour.
 - **Calendrier** : événements du jour en lecture seule depuis un flux ICS
   (Google « adresse secrète iCal », iCloud public), bouton vers l'app native.
+- **Média** : photo, GIF ou vidéo en boucle (son optionnel) — la lecture se
+  coupe automatiquement hors écran, idéal pour la démo d'un exercice.
+- **Planning hebdomadaire** : chaque page s'attribue à un ou plusieurs jours
+  (récurrent chaque semaine) ; la vue d'ensemble affiche « Ma semaine » avec
+  le jour courant mis en avant.
 
 ### Importation IA
 Bouton **Importer** → colle un JSON conforme au

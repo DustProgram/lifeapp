@@ -71,6 +71,19 @@ const checklistWidgetSchema = z.object({
   }),
 });
 
+const mediaWidgetSchema = z.object({
+  type: z.literal("media"),
+  title: z.string().min(1).max(80),
+  size: sizeSchema,
+  config: z
+    .object({
+      url: z.url().optional(),
+      sound: z.boolean().default(false),
+      fit: z.enum(["cover", "contain"]).default("cover"),
+    })
+    .default({ sound: false, fit: "cover" }),
+});
+
 const calendarWidgetSchema = z.object({
   type: z.literal("calendar"),
   title: z.string().min(1).max(80),
@@ -90,6 +103,11 @@ export const routineImportSchema = z.object({
     icon: z.string().max(8).optional(),
     description: z.string().max(500).optional(),
     theme: themeSchema.optional(),
+    days: z
+      .array(z.number().int().min(0).max(6))
+      .max(7)
+      .optional()
+      .describe("Jours de la semaine planifiés (0 = lundi … 6 = dimanche)"),
   }),
   widgets: z
     .array(
@@ -98,6 +116,7 @@ export const routineImportSchema = z.object({
         timerWidgetSchema,
         checklistWidgetSchema,
         calendarWidgetSchema,
+        mediaWidgetSchema,
       ])
     )
     .min(1)
@@ -158,6 +177,9 @@ export function parseRoutineImport(raw: string):
       name: data.routine.name,
       icon: data.routine.icon,
       theme: data.routine.theme,
+      days: data.routine.days?.length
+        ? [...new Set(data.routine.days)].sort((a, b) => a - b)
+        : undefined,
       widgets,
     },
   };

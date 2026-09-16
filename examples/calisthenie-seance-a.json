@@ -3,7 +3,10 @@
   "routine": {
     "name": "Séance A",
     "icon": "🅰️",
-    "description": "Calisthénie — poussée et gainage (30-40 min)"
+    "description": "Calisthénie — poussée et gainage (30-40 min)",
+    "days": [
+      0
+    ]
   },
   "widgets": [
     {
@@ -18,14 +21,22 @@
       "type": "timer",
       "title": "Échauffement — 5 min",
       "size": "sm",
-      "config": { "mode": "countdown", "durationSec": 300 }
+      "config": {
+        "mode": "countdown",
+        "durationSec": 300
+      }
     },
     {
       "type": "checklist",
       "title": "Pompes inclinées 4 × 6-10",
       "size": "sm",
       "config": {
-        "items": ["Série 1", "Série 2", "Série 3", "Série 4"],
+        "items": [
+          "Série 1",
+          "Série 2",
+          "Série 3",
+          "Série 4"
+        ],
         "resetDaily": true
       }
     },
@@ -33,31 +44,60 @@
       "type": "checklist",
       "title": "Dips sur chaise 3 × 8",
       "size": "sm",
-      "config": { "items": ["Série 1", "Série 2", "Série 3"], "resetDaily": true }
+      "config": {
+        "items": [
+          "Série 1",
+          "Série 2",
+          "Série 3"
+        ],
+        "resetDaily": true
+      }
     },
     {
       "type": "checklist",
       "title": "Pompes genoux 3 × max",
       "size": "sm",
-      "config": { "items": ["Série 1", "Série 2", "Série 3"], "resetDaily": true }
+      "config": {
+        "items": [
+          "Série 1",
+          "Série 2",
+          "Série 3"
+        ],
+        "resetDaily": true
+      }
     },
     {
       "type": "timer",
       "title": "Planche 3 × 30 s",
       "size": "sm",
-      "config": { "mode": "interval", "sets": 3, "workSec": 30, "restSec": 45 }
+      "config": {
+        "mode": "interval",
+        "sets": 3,
+        "workSec": 30,
+        "restSec": 45
+      }
     },
     {
       "type": "timer",
       "title": "Hollow hold 3 × 20 s",
       "size": "sm",
-      "config": { "mode": "interval", "sets": 3, "workSec": 20, "restSec": 45 }
+      "config": {
+        "mode": "interval",
+        "sets": 3,
+        "workSec": 20,
+        "restSec": 45
+      }
     },
     {
       "type": "timer",
       "title": "Étirements — 5 × 45 s",
       "size": "sm",
-      "config": { "mode": "interval", "sets": 5, "workSec": 45, "restSec": 10 }
+      "config": {
+        "mode": "interval",
+        "sets": 5,
+        "workSec": 45,
+        "restSec": 10
+      }
     }
   ]
 }
