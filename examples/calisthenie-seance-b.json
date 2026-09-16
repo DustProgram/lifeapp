@@ -23,7 +23,8 @@
       "size": "sm",
       "config": {
         "mode": "countdown",
-        "durationSec": 300
+        "durationSec": 300,
+        "description": "Épaules ×10 · hanches ×10 · cat-cow ×10 · 20 squats · planche 20 s."
       }
     },
     {
@@ -87,7 +88,8 @@
         "mode": "interval",
         "sets": 6,
         "workSec": 25,
-        "restSec": 20
+        "restSec": 20,
+        "description": "Alterner côté à chaque phase. Bassin haut, corps aligné."
       }
     },
     {
@@ -98,7 +100,8 @@
         "mode": "interval",
         "sets": 5,
         "workSec": 45,
-        "restSec": 10
+        "restSec": 10,
+        "description": "Ischios → psoas → pigeon → pecs → torsion. Une position par phase."
       }
     }
   ]

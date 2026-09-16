@@ -78,9 +78,18 @@ Trois modes via `config.mode` :
 {
   "type": "timer",
   "title": "Développé couché",
-  "config": { "mode": "interval", "sets": 4, "workSec": 40, "restSec": 90 }
+  "config": {
+    "mode": "interval",
+    "sets": 4,
+    "workSec": 40,
+    "restSec": 90,
+    "description": "4×8 — coudes serrés, descente contrôlée 2 s"
+  }
 }
 ```
+
+`description` (≤ 300 caractères, tous modes) affiche des consignes sous le
+titre : tempo, charge, points techniques…
 
 Le mode `interval` enchaîne automatiquement `sets` phases d'effort
 (`workSec` secondes) séparées par des repos (`restSec` secondes), avec bips

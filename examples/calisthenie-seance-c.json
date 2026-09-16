@@ -97,7 +97,8 @@
         "mode": "interval",
         "sets": 5,
         "workSec": 45,
-        "restSec": 10
+        "restSec": 10,
+        "description": "Ischios → psoas → pigeon → pecs → torsion. Une position par phase."
       }
     }
   ]

@@ -3,7 +3,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { ReactNode } from "react";
-import { useActivePageLocked, useDashboard } from "@/lib/store";
+import { useActivePageColumn, useActivePageLocked, useDashboard } from "@/lib/store";
 import type { Widget, WidgetSize } from "@/lib/types";
 
 const SPAN: Record<WidgetSize, string> = {
@@ -26,6 +26,7 @@ export function WidgetShell({
 }) {
   const { updateWidget, removeWidget } = useDashboard();
   const locked = useActivePageLocked();
+  const column = useActivePageColumn();
   const {
     attributes,
     listeners,
@@ -41,7 +42,7 @@ export function WidgetShell({
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={`group/widget relative flex min-h-40 flex-col rounded-xl border-2 border-line bg-card transition-shadow ${
-        SPAN[widget.size]
+        column ? "" : SPAN[widget.size]
       } ${isDragging ? "z-20 opacity-80 shadow-brutal" : "hover:shadow-brutal-sm"}`}
     >
       <header className="flex items-center gap-1 border-b border-line-soft px-3 py-2">

@@ -204,9 +204,11 @@ export function TopBar() {
   const router = useRouter();
   const [importing, setImporting] = useState(false);
   const [theming, setTheming] = useState(false);
-  const { pages, activePageId, setActivePage, togglePageLock } = useDashboard();
+  const { pages, activePageId, setActivePage, togglePageLock, togglePageLayout, setPlaying } =
+    useDashboard();
   const activePage = pages.find((p) => p.id === activePageId);
   const locked = Boolean(activePage?.locked);
+  const column = activePage?.layout === "column";
 
   const logout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -265,6 +267,48 @@ export function TopBar() {
             >
               Importer
             </button>
+            {activePage && activePage.widgets.length > 0 && (
+              <button
+                onClick={() => setPlaying(true)}
+                aria-label="Mode Play : dérouler les blocs un par un"
+                title="Mode Play : dérouler les blocs un par un"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border-2 border-line bg-card hover:bg-accent hover:text-accent-ink"
+              >
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden>
+                  <path d="M3 1.8v10.4L12 7z" />
+                </svg>
+              </button>
+            )}
+            {activePage && (
+              <button
+                onClick={() => togglePageLayout(activePage.id)}
+                aria-label={column ? "Passer en grille libre" : "Passer en colonne ordonnée"}
+                title={
+                  column
+                    ? "Colonne ordonnée — cliquer pour la grille libre"
+                    : "Grille libre — cliquer pour la colonne ordonnée"
+                }
+                aria-pressed={column}
+                className={`hidden h-9 w-9 items-center justify-center rounded-lg border-2 border-line sm:flex ${
+                  column ? "bg-accent text-accent-ink shadow-brutal-sm" : "bg-card text-muted hover:bg-card-2 hover:text-foreground"
+                }`}
+              >
+                {column ? (
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+                    <rect x="3.5" y="2" width="9" height="3.4" rx="1" />
+                    <rect x="3.5" y="6.8" width="9" height="3.4" rx="1" />
+                    <rect x="3.5" y="11.6" width="9" height="2.4" rx="1" />
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+                    <rect x="2" y="2" width="5.4" height="5.4" rx="1" />
+                    <rect x="8.6" y="2" width="5.4" height="5.4" rx="1" />
+                    <rect x="2" y="8.6" width="5.4" height="5.4" rx="1" />
+                    <rect x="8.6" y="8.6" width="5.4" height="5.4" rx="1" />
+                  </svg>
+                )}
+              </button>
+            )}
             {activePageId !== null && !locked && <AddWidgetMenu />}
             {activePage && (
               <button

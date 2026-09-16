@@ -69,7 +69,8 @@
         "mode": "interval",
         "sets": 3,
         "workSec": 60,
-        "restSec": 15
+        "restSec": 15,
+        "description": "Accroché à un montant de porte, talons au sol."
       }
     },
     {

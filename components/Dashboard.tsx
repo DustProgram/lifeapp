@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { DashboardGrid } from "@/components/grid/DashboardGrid";
 import { PagesOverview } from "@/components/PagesOverview";
+import { PlayMode } from "@/components/PlayMode";
 import { ThemeApplier } from "@/components/ThemeApplier";
 import { useDashboard } from "@/lib/store";
 import type { RoutinePage, ThemeOverride } from "@/lib/types";
@@ -25,7 +26,8 @@ function readLegacyLocalState(): SavedState | null {
 }
 
 export function Dashboard() {
-  const { hydrated, activePageId, hydrate } = useDashboard();
+  const { hydrated, activePageId, hydrate, playing, pages } = useDashboard();
+  const activePage = pages.find((p) => p.id === activePageId);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Chargement : le serveur est la source de vérité (un dashboard par
@@ -108,7 +110,13 @@ export function Dashboard() {
   return (
     <>
       <ThemeApplier />
-      {activePageId === null ? <PagesOverview /> : <DashboardGrid />}
+      {playing && activePage && activePage.widgets.length > 0 ? (
+        <PlayMode page={activePage} />
+      ) : activePageId === null ? (
+        <PagesOverview />
+      ) : (
+        <DashboardGrid />
+      )}
     </>
   );
 }

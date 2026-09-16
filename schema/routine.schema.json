@@ -43,6 +43,11 @@
   },
   "$defs": {
     "hexColor": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+    "timerDescription": {
+      "type": "string",
+      "maxLength": 300,
+      "description": "Consignes affichées sous le titre du timer (tempo, charge, posture…)."
+    },
     "theme": {
       "type": "object",
       "description": "Palette de la page (optionnelle). Tout champ absent hérite du thème de l'utilisateur ; les tons dérivés sont calculés automatiquement.",
@@ -95,6 +100,7 @@
               "additionalProperties": false,
               "properties": {
                 "mode": { "const": "countdown" },
+                "description": { "$ref": "#/$defs/timerDescription" },
                 "durationSec": { "type": "integer", "minimum": 1, "maximum": 86400 }
               }
             },
@@ -102,7 +108,10 @@
               "type": "object",
               "required": ["mode"],
               "additionalProperties": false,
-              "properties": { "mode": { "const": "stopwatch" } }
+              "properties": {
+                "mode": { "const": "stopwatch" },
+                "description": { "$ref": "#/$defs/timerDescription" }
+              }
             },
             {
               "type": "object",
@@ -110,6 +119,7 @@
               "additionalProperties": false,
               "properties": {
                 "mode": { "const": "interval" },
+                "description": { "$ref": "#/$defs/timerDescription" },
                 "sets": { "type": "integer", "minimum": 1, "maximum": 99 },
                 "workSec": { "type": "integer", "minimum": 1, "maximum": 86400 },
                 "restSec": { "type": "integer", "minimum": 0, "maximum": 86400 }

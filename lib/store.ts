@@ -96,6 +96,11 @@ interface DashboardState {
   togglePageDay: (pageId: string, day: number) => void;
   /** Verrouille/déverrouille la page (fige widgets et suppression). */
   togglePageLock: (pageId: string) => void;
+  /** Bascule la page entre grille libre et colonne ordonnée. */
+  togglePageLayout: (pageId: string) => void;
+  /** Mode Play : lecture des widgets un par un, plein écran. */
+  playing: boolean;
+  setPlaying: (v: boolean) => void;
   setActivePage: (id: string | null) => void;
   addPage: (name: string, icon?: string) => void;
   addImportedPage: (page: RoutinePage) => void;
@@ -113,6 +118,12 @@ interface DashboardState {
 export const useActivePageLocked = () =>
   useDashboard(
     (s) => s.pages.find((p) => p.id === s.activePageId)?.locked ?? false
+  );
+
+/** true si la page active est en colonne ordonnée. */
+export const useActivePageColumn = () =>
+  useDashboard(
+    (s) => s.pages.find((p) => p.id === s.activePageId)?.layout === "column"
   );
 
 const patchActivePage = (
@@ -160,6 +171,18 @@ export const useDashboard = create<DashboardState>()((set) => ({
     set((s) => ({
       pages: s.pages.map((p) =>
         p.id === pageId ? { ...p, theme: mergeTheme(p.theme, patch) ?? undefined } : p
+      ),
+    })),
+
+  playing: false,
+  setPlaying: (v) => set({ playing: v }),
+
+  togglePageLayout: (pageId) =>
+    set((s) => ({
+      pages: s.pages.map((p) =>
+        p.id === pageId
+          ? { ...p, layout: p.layout === "column" ? undefined : "column" }
+          : p
       ),
     })),
 

@@ -13,6 +13,8 @@ export interface NoteConfig {
 
 export interface TimerConfig {
   mode: TimerMode;
+  /** Consignes affichées sous le titre (tempo, charge, posture…). */
+  description?: string;
   /** Countdown duration in seconds (mode: countdown). */
   durationSec?: number;
   /** Number of work sets (mode: interval). */
@@ -90,6 +92,8 @@ export interface RoutinePage {
   days?: number[];
   /** Page verrouillée : l'usage reste possible, la structure est figée. */
   locked?: boolean;
+  /** "column" = colonne unique ordonnée (comme mobile) ; absent = grille libre. */
+  layout?: "column";
   widgets: Widget[];
 }
 

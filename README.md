@@ -87,6 +87,10 @@ formulaire demande automatiquement le code de validation quand HA l'exige.
   (Google « adresse secrète iCal », iCloud public), bouton vers l'app native.
 - **Média** : photo, GIF ou vidéo en boucle (son optionnel) — la lecture se
   coupe automatiquement hors écran, idéal pour la démo d'un exercice.
+- **Deux dispositions par page** : grille libre, ou colonne ordonnée pour
+  suivre une séance dans l'ordre exact ; **mode Play ▶** plein écran qui
+  déroule les blocs un par un (flèches, clavier, timers qui continuent en
+  fond).
 - **Planning hebdomadaire** : chaque page s'attribue à un ou plusieurs jours
   (récurrent chaque semaine) ; la vue d'ensemble affiche « Ma semaine » avec
   le jour courant mis en avant.

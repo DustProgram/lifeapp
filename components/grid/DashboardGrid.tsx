@@ -23,7 +23,7 @@ import { MediaWidget } from "@/components/widgets/MediaWidget";
 import { NoteWidget } from "@/components/widgets/NoteWidget";
 import { TimerWidget } from "@/components/widgets/TimerWidget";
 
-function WidgetBody({ widget }: { widget: Widget }) {
+export function WidgetBody({ widget }: { widget: Widget }) {
   switch (widget.type) {
     case "note":
       return <NoteWidget widget={widget} />;
@@ -71,10 +71,18 @@ export function DashboardGrid() {
     );
   }
 
+  const column = page.layout === "column";
+
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
       <SortableContext items={page.widgets.map((w) => w.id)} strategy={rectSortingStrategy}>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div
+          className={
+            column
+              ? "mx-auto grid max-w-2xl grid-cols-1 gap-4"
+              : "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
+          }
+        >
           {page.widgets.map((w) => (
             <WidgetBody key={w.id} widget={w} />
           ))}

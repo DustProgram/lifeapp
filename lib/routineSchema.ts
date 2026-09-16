@@ -42,11 +42,16 @@ const timerWidgetSchema = z.object({
     .discriminatedUnion("mode", [
       z.object({
         mode: z.literal("countdown"),
+        description: z.string().max(300).optional(),
         durationSec: z.number().int().min(1).max(86400),
       }),
-      z.object({ mode: z.literal("stopwatch") }),
+      z.object({
+        mode: z.literal("stopwatch"),
+        description: z.string().max(300).optional(),
+      }),
       z.object({
         mode: z.literal("interval"),
+        description: z.string().max(300).optional(),
         sets: z.number().int().min(1).max(99),
         workSec: z.number().int().min(1).max(86400),
         restSec: z.number().int().min(0).max(86400),

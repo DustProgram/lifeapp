@@ -188,6 +188,11 @@ export function TimerWidget({ widget }: { widget: Widget & { type: "timer" } }) 
         />
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center gap-3">
+          {cfg.description && (
+            <p className="max-w-sm whitespace-pre-line text-center text-xs leading-snug text-muted">
+              {cfg.description}
+            </p>
+          )}
           {cfg.mode === "interval" && phase && (
             <div
               className={`rounded-full border-2 border-line px-3 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest ${
@@ -275,6 +280,7 @@ function TimerConfigForm({
 }) {
   const [draft, setDraft] = useState<TimerConfig>({
     mode: cfg.mode,
+    description: cfg.description ?? "",
     durationSec: cfg.durationSec ?? 300,
     sets: cfg.sets ?? 4,
     workSec: cfg.workSec ?? 40,
@@ -329,23 +335,41 @@ function TimerConfigForm({
         </div>
       )}
 
+      <label className="flex flex-col gap-1 text-[10px] font-bold uppercase tracking-wider text-muted">
+        Détails (consignes, charge, tempo…)
+        <textarea
+          value={draft.description ?? ""}
+          onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))}
+          rows={2}
+          maxLength={300}
+          placeholder="Ex. : 4×8 — coudes serrés, descente 2 s"
+          className="resize-y rounded-lg border border-line-soft bg-card-2 px-2 py-1 text-xs leading-snug text-foreground outline-none focus:border-line"
+        />
+      </label>
+
       <div className="mt-auto flex justify-end gap-2">
         <button onClick={onCancel} className="rounded-lg px-3 py-1.5 text-xs font-semibold text-muted hover:bg-card-2">
           Annuler
         </button>
         <button
           onClick={() => {
+            const description = draft.description?.trim() || undefined;
             const clean: TimerConfig =
               draft.mode === "countdown"
-                ? { mode: "countdown", durationSec: Math.max(1, draft.durationSec ?? 60) }
+                ? {
+                    mode: "countdown",
+                    description,
+                    durationSec: Math.max(1, draft.durationSec ?? 60),
+                  }
                 : draft.mode === "interval"
                   ? {
                       mode: "interval",
+                      description,
                       sets: draft.sets ?? 1,
                       workSec: Math.max(1, draft.workSec ?? 30),
                       restSec: draft.restSec ?? 0,
                     }
-                  : { mode: "stopwatch" };
+                  : { mode: "stopwatch", description };
             onSave(clean);
           }}
           className="rounded-lg border-2 border-line bg-accent px-3 py-1.5 text-xs font-bold text-accent-ink shadow-brutal-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
