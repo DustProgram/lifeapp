@@ -17,7 +17,23 @@ IA peut générer une page de routine complète à coller dans l'app.
 - **Zod** — validation des imports de routines
 - **node-ical** — lecture des flux ICS côté serveur (pas de CORS)
 
-## Démarrage
+## Installation sur Home Assistant (recommandé — HA Green, Yellow, HA OS)
+
+LifeOS s'installe comme un **add-on**, directement depuis l'interface HA :
+
+1. **Paramètres → Modules complémentaires → Boutique des modules** →
+   menu **⋮** → **Dépôts** → ajouter `https://github.com/DustProgram/lifeapp`
+
+   [![Ajouter le dépôt à ma boutique d'add-ons](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FDustProgram%2Flifeapp)
+
+2. Installe la carte **LifeOS** (le premier build prend quelques minutes),
+   démarre, puis **Ouvrir l'interface Web**.
+3. Connecte-toi avec **tes identifiants Home Assistant** — l'add-on les
+   valide via l'API du Supervisor, rien à configurer.
+
+Détails dans [`lifeos/DOCS.md`](lifeos/DOCS.md).
+
+## Démarrage manuel (serveur Node autonome)
 
 ```bash
 npm install

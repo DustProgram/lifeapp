@@ -16,13 +16,43 @@ export type HaLoginResult =
   | { ok: false; reason: "invalid_credentials" | "mfa_required" | "unreachable" | "not_configured" };
 
 export function haConfigured(): boolean {
-  return Boolean(process.env.HA_URL);
+  return Boolean(process.env.HA_URL || process.env.SUPERVISOR_TOKEN);
+}
+
+/**
+ * Add-on mode: when LifeOS runs as a Home Assistant add-on (`auth_api: true`
+ * in its config), the Supervisor exposes an auth endpoint that validates a
+ * username/password against the HA user database directly.
+ */
+async function verifySupervisorAuth(
+  username: string,
+  password: string
+): Promise<HaLoginResult> {
+  try {
+    const res = await fetch("http://supervisor/auth", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.SUPERVISOR_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+      signal: AbortSignal.timeout(10000),
+    });
+    if (res.ok) return { ok: true };
+    if (res.status >= 500) return { ok: false, reason: "unreachable" };
+    return { ok: false, reason: "invalid_credentials" };
+  } catch {
+    return { ok: false, reason: "unreachable" };
+  }
 }
 
 export async function verifyHaCredentials(
   username: string,
   password: string
 ): Promise<HaLoginResult> {
+  if (process.env.SUPERVISOR_TOKEN) {
+    return verifySupervisorAuth(username, password);
+  }
   const haUrl = process.env.HA_URL?.replace(/\/+$/, "");
   if (!haUrl) return { ok: false, reason: "not_configured" };
 
