@@ -3,7 +3,8 @@
   "routine": {
     "name": "Push Day",
     "icon": "💪",
-    "description": "Séance pectoraux / épaules / triceps (~60 min)"
+    "description": "Séance pectoraux / épaules / triceps (~60 min)",
+    "days": [0, 3]
   },
   "widgets": [
     {
@@ -18,19 +19,35 @@
       "type": "timer",
       "title": "Échauffement",
       "size": "sm",
-      "config": { "mode": "countdown", "durationSec": 300 }
+      "config": {
+        "mode": "countdown",
+        "durationSec": 300,
+        "description": "Mobilité épaules + séries légères à vide."
+      }
     },
     {
       "type": "timer",
       "title": "Développé couché",
       "size": "sm",
-      "config": { "mode": "interval", "sets": 4, "workSec": 40, "restSec": 90 }
+      "config": {
+        "mode": "interval",
+        "sets": 4,
+        "workSec": 40,
+        "restSec": 90,
+        "description": "Coudes à ~45°, descente contrôlée 2 s, pieds ancrés."
+      }
     },
     {
       "type": "timer",
       "title": "Développé militaire",
       "size": "sm",
-      "config": { "mode": "interval", "sets": 4, "workSec": 40, "restSec": 90 }
+      "config": {
+        "mode": "interval",
+        "sets": 4,
+        "workSec": 40,
+        "restSec": 90,
+        "description": "Gainage serré, pas de cambrure lombaire."
+      }
     },
     {
       "type": "timer",

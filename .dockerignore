@@ -1,0 +1,9 @@
+node_modules
+.next
+data
+.git
+.env*
+docs
+lifeos
+examples
+*.md

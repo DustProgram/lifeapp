@@ -75,8 +75,8 @@ Le contrat que les IA doivent respecter est documenté et outillé :
 - 📘 [Documentation du schéma v1](docs/ROUTINE_SCHEMA.md) — avec un prompt
   type à donner à ton IA
 - 🧩 [JSON Schema machine](schema/routine.schema.json)
-- 📂 [Fiches d'exemple prêtes à importer](examples/) — programme calisthénie
-  complet (séances A/B/C, mobilité, bloc quotidien) et routine soins
+- 📂 [Fiches d'exemple prêtes à importer](examples/) — séance full body,
+  push day, routine skincare, sessions focus pomodoro
 
 ![Import multi-fichiers](docs/screenshots/import.png)
 
@@ -132,7 +132,42 @@ panel_iframe:
     url: http://IP_DE_TON_HA:3000
 ```
 
-### Serveur Node autonome (IP fixe, NAS, VPS local)
+### Docker — NAS (Synology, QNAP), Portainer, VPS…
+
+LifeOS est une app web autonome : Home Assistant n'est **pas requis** pour
+la faire tourner (il ne sert, en option, que de fournisseur d'identité).
+
+Avec l'image pré-construite (amd64 + arm64) :
+
+```yaml
+# docker-compose.yml
+services:
+  lifeos:
+    image: ghcr.io/dustprogram/lifeapp:latest
+    ports: ["3000:3000"]
+    environment:
+      SESSION_SECRET: remplace-moi          # openssl rand -hex 32
+      ALLOW_HTTP: "1"
+      # Auth via Home Assistant…            (HA_URL + APP_URL)
+      HA_URL: http://homeassistant.local:8123
+      APP_URL: http://IP_DU_SERVEUR:3000
+      # …ou compte local sans HA :
+      # APP_USER: admin
+      # APP_PASSWORD: change-moi
+    volumes:
+      - ./data:/data                        # dashboards + journal
+    restart: unless-stopped
+```
+
+```bash
+docker compose up -d    # → http://IP_DU_SERVEUR:3000
+```
+
+Sur Synology/QNAP : Container Manager → Projet → colle ce compose. Le
+[`docker-compose.yml`](docker-compose.yml) du dépôt permet aussi un build
+local (`build: .`).
+
+### Serveur Node autonome (IP fixe, VPS local)
 
 ```bash
 git clone https://github.com/DustProgram/lifeapp && cd lifeapp

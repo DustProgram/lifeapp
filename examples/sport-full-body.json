@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "routine": {
+    "name": "Full Body",
+    "icon": "🏋️",
+    "description": "Séance complète au poids du corps et haltères (~45 min)",
+    "days": [1, 4]
+  },
+  "widgets": [
+    {
+      "type": "note",
+      "title": "Programme",
+      "size": "md",
+      "config": {
+        "markdown": "## Full Body — mardi et vendredi\n\n| Exercice | Séries × reps |\n|---|---|\n| Squats gobelet | 3 × 10 |\n| Pompes | 3 × 10 |\n| Rowing haltère | 3 × 10 par bras |\n| Fentes | 3 × 8 par jambe |\n| Gainage | 3 × 30 s |\n\n> **Règle simple** : garde 2 répétitions de marge sur chaque série. Quand les 3 × 10 passent proprement, augmente légèrement la charge."
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Échauffement — dans l'ordre",
+      "size": "sm",
+      "config": {
+        "description": "5 min avant chaque séance. Pas d'étirement statique long avant l'effort.",
+        "items": [
+          "Jumping jacks 30 s",
+          "Rotations d'épaules × 10",
+          "Rotations de hanches × 10",
+          "Squats à vide × 15",
+          "Pompes faciles × 5"
+        ],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "timer",
+      "title": "Chrono échauffement",
+      "size": "sm",
+      "config": {
+        "mode": "countdown",
+        "durationSec": 300,
+        "description": "Lance-le en commençant : 5 min pour dérouler la liste."
+      }
+    },
+    {
+      "type": "media",
+      "title": "Démo de l'exercice",
+      "size": "sm",
+      "config": {
+        "sound": false,
+        "fit": "cover"
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Squats gobelet 3 × 10",
+      "size": "sm",
+      "config": {
+        "description": "Haltère tenu contre la poitrine, dos droit, talons au sol.",
+        "items": ["Série 1", "Série 2", "Série 3"],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Pompes 3 × 10",
+      "size": "sm",
+      "config": {
+        "description": "Corps gainé en ligne, coudes à ~45°. Sur les genoux si besoin.",
+        "items": ["Série 1", "Série 2", "Série 3"],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Rowing haltère 3 × 10/bras",
+      "size": "sm",
+      "config": {
+        "description": "Un genou sur un banc ou une chaise, dos plat, tire le coude vers la hanche.",
+        "items": ["Série 1", "Série 2", "Série 3"],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Fentes 3 × 8/jambe",
+      "size": "sm",
+      "config": {
+        "description": "Grand pas, genou arrière vers le sol, buste droit.",
+        "items": ["Série 1", "Série 2", "Série 3"],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "timer",
+      "title": "Gainage 3 × 30 s",
+      "size": "sm",
+      "config": {
+        "mode": "interval",
+        "sets": 3,
+        "workSec": 30,
+        "restSec": 45,
+        "description": "Coudes sous les épaules, corps en ligne, respiration lente."
+      }
+    },
+    {
+      "type": "timer",
+      "title": "Étirements — 4 × 45 s",
+      "size": "sm",
+      "config": {
+        "mode": "interval",
+        "sets": 4,
+        "workSec": 45,
+        "restSec": 10,
+        "description": "Une position par phase : 1 quadriceps · 2 ischios · 3 épaules/pecs · 4 dos rond-dos creux. Tension, jamais douleur."
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "routine": {
+    "name": "Focus",
+    "icon": "🍅",
+    "description": "Sessions de travail profond en pomodoro",
+    "days": [0, 1, 2, 3, 4],
+    "theme": { "accent": "#7aa2ff" }
+  },
+  "widgets": [
+    {
+      "type": "note",
+      "title": "La méthode",
+      "size": "md",
+      "config": {
+        "markdown": "## Pomodoro\n\n1. Choisis **une seule tâche**.\n2. 25 min de travail sans interruption.\n3. 5 min de vraie pause (debout, loin de l'écran).\n4. Après 4 cycles : pause longue de 20-30 min.\n\n> Une distraction ? Note-la sur un papier et reviens à la tâche."
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Avant de commencer",
+      "size": "sm",
+      "config": {
+        "description": "2 minutes de préparation qui sauvent la session.",
+        "items": [
+          "Téléphone en silencieux, hors de portée",
+          "Onglets et notifications fermés",
+          "Un verre d'eau",
+          "La tâche du cycle est écrite"
+        ],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "timer",
+      "title": "Pomodoro × 4",
+      "size": "sm",
+      "config": {
+        "mode": "interval",
+        "sets": 4,
+        "workSec": 1500,
+        "restSec": 300,
+        "description": "25 min de travail / 5 min de pause, enchaînés automatiquement avec bips."
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Tâches du jour",
+      "size": "sm",
+      "config": {
+        "items": ["Tâche 1", "Tâche 2", "Tâche 3"],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "calendar",
+      "title": "Aujourd'hui",
+      "size": "sm",
+      "config": {}
+    }
+  ]
+}

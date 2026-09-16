@@ -1,0 +1,26 @@
+# LifeOS sur un NAS (Synology/QNAP), Portainer ou n'importe quel serveur Docker.
+#   docker compose up -d          → build local
+# Ou remplace `build: .` par l'image pré-construite :
+#   image: ghcr.io/dustprogram/lifeapp:latest
+
+services:
+  lifeos:
+    build: .
+    container_name: lifeos
+    ports:
+      - "3000:3000"
+    environment:
+      # Connexion avec tes identifiants Home Assistant (optionnel) :
+      HA_URL: http://homeassistant.local:8123
+      APP_URL: http://IP_DU_SERVEUR:3000
+      # Ou compte local sans Home Assistant :
+      # APP_USER: admin
+      # APP_PASSWORD: change-moi
+      # Obligatoire — génère-le avec : openssl rand -hex 32
+      SESSION_SECRET: remplace-moi-par-un-secret-aleatoire
+      # Usage en http:// sur le réseau local :
+      ALLOW_HTTP: "1"
+    volumes:
+      # Dashboards par utilisateur + journal de connexions.
+      - ./data:/data
+    restart: unless-stopped

@@ -3,7 +3,8 @@
   "routine": {
     "name": "Skincare",
     "icon": "🧴",
-    "description": "Routines visage matin et soir"
+    "description": "Routine visage matin et soir",
+    "days": [0, 1, 2, 3, 4, 5, 6]
   },
   "widgets": [
     {
@@ -11,11 +12,12 @@
       "title": "Matin",
       "size": "sm",
       "config": {
+        "description": "Tous les jours, dans l'ordre, sur peau propre.",
         "items": [
-          "Nettoyant doux",
-          "Sérum vitamine C",
+          "Nettoyant doux (ou eau tiède)",
+          "Sérum hydratant sur peau humide",
           "Crème hydratante",
-          "SPF 50"
+          "SPF 50 — visage et cou"
         ],
         "resetDaily": true
       }
@@ -25,27 +27,41 @@
       "title": "Soir",
       "size": "sm",
       "config": {
+        "description": "Introduis les actifs progressivement : un soir sur deux la première semaine.",
         "items": [
-          "Démaquillant / huile",
-          "Nettoyant doux",
-          "Rétinol (lun/mer/ven)",
+          "Démaquillage / nettoyant doux",
+          "Actif du soir (au choix)",
           "Crème de nuit"
         ],
         "resetDaily": true
       }
     },
     {
+      "type": "note",
+      "title": "Rythme de la semaine",
+      "size": "md",
+      "config": {
+        "markdown": "## Rythme\n\n| Quoi | Quand |\n|---|---|\n| Gommage doux | 1 à 2×/semaine, le soir |\n| Masque hydratant | 1×/semaine |\n| Actifs (rétinol, AHA…) | jamais le même soir qu'un gommage |\n\n> En cas de tiraillements : espace les actifs et reviens aux basiques nettoyant + hydratant + SPF."
+      }
+    },
+    {
       "type": "timer",
       "title": "Pose du masque",
       "size": "sm",
-      "config": { "mode": "countdown", "durationSec": 600 }
+      "config": {
+        "mode": "countdown",
+        "durationSec": 600,
+        "description": "10 min de pose, puis rinçage à l'eau tiède."
+      }
     },
     {
-      "type": "note",
-      "title": "Notes peau",
+      "type": "checklist",
+      "title": "À racheter",
       "size": "sm",
       "config": {
-        "markdown": "## Suivi\n\n- Rétinol : augmenter à 0,5 % dans 2 semaines\n- Éviter AHA le même soir que le rétinol"
+        "description": "Liste de courses — elle ne se décoche pas chaque jour.",
+        "items": ["Nettoyant doux", "Crème hydratante", "SPF 50"],
+        "resetDaily": false
       }
     }
   ]

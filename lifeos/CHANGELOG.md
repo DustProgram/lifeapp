@@ -3,6 +3,20 @@
 Toutes les évolutions notables de LifeOS. Format inspiré de
 [Keep a Changelog](https://keepachangelog.com/fr/), versions [SemVer](https://semver.org/lang/fr/).
 
+## [Non publié]
+
+### Ajouté
+- **Support Docker officiel** pour NAS (Synology, QNAP), Portainer et tout
+  serveur : `Dockerfile` racine, `docker-compose.yml`, et image
+  pré-construite `ghcr.io/dustprogram/lifeapp` (amd64 + arm64) publiée
+  automatiquement par GitHub Actions. Home Assistant devient optionnel
+  (fournisseur d'identité uniquement).
+
+### Modifié
+- Fiches d'exemple remplacées par des routines génériques (full body,
+  push day, skincare, focus pomodoro) sans données personnelles ; captures
+  d'écran de la documentation régénérées en conséquence.
+
 ## [0.1.10] — 2026-09-16
 
 ### Ajouté
