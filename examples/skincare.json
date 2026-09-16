@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "routine": {
+    "name": "Skincare",
+    "icon": "🧴",
+    "description": "Routines visage matin et soir"
+  },
+  "widgets": [
+    {
+      "type": "checklist",
+      "title": "Matin",
+      "size": "sm",
+      "config": {
+        "items": [
+          "Nettoyant doux",
+          "Sérum vitamine C",
+          "Crème hydratante",
+          "SPF 50"
+        ],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Soir",
+      "size": "sm",
+      "config": {
+        "items": [
+          "Démaquillant / huile",
+          "Nettoyant doux",
+          "Rétinol (lun/mer/ven)",
+          "Crème de nuit"
+        ],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "timer",
+      "title": "Pose du masque",
+      "size": "sm",
+      "config": { "mode": "countdown", "durationSec": 600 }
+    },
+    {
+      "type": "note",
+      "title": "Notes peau",
+      "size": "sm",
+      "config": {
+        "markdown": "## Suivi\n\n- Rétinol : augmenter à 0,5 % dans 2 semaines\n- Éviter AHA le même soir que le rétinol"
+      }
+    }
+  ]
+}

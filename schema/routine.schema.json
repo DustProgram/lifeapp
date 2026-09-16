@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/DustProgram/lifeapp/main/schema/routine.schema.json",
+  "title": "LifeOS Routine Import",
+  "description": "Contrat v1 : un document JSON généré par une IA externe qui construit une page de routine LifeOS complète (widgets pré-configurés).",
+  "type": "object",
+  "required": ["version", "routine", "widgets"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": 1 },
+    "routine": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 60 },
+        "icon": { "type": "string", "maxLength": 8, "description": "Un emoji affiché dans l'onglet de la page." },
+        "description": { "type": "string", "maxLength": 500 }
+      }
+    },
+    "widgets": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 40,
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/noteWidget" },
+          { "$ref": "#/$defs/timerWidget" },
+          { "$ref": "#/$defs/checklistWidget" },
+          { "$ref": "#/$defs/calendarWidget" }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "size": {
+      "type": "string",
+      "enum": ["sm", "md", "lg"],
+      "description": "Largeur dans la grille : sm = 1 colonne, md = 2 colonnes, lg = pleine largeur."
+    },
+    "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "noteWidget": {
+      "type": "object",
+      "required": ["type", "title", "config"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "note" },
+        "title": { "$ref": "#/$defs/title" },
+        "size": { "$ref": "#/$defs/size" },
+        "config": {
+          "type": "object",
+          "required": ["markdown"],
+          "additionalProperties": false,
+          "properties": {
+            "markdown": { "type": "string", "maxLength": 20000 }
+          }
+        }
+      }
+    },
+    "timerWidget": {
+      "type": "object",
+      "required": ["type", "title"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "timer" },
+        "title": { "$ref": "#/$defs/title" },
+        "size": { "$ref": "#/$defs/size" },
+        "config": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["mode", "durationSec"],
+              "additionalProperties": false,
+              "properties": {
+                "mode": { "const": "countdown" },
+                "durationSec": { "type": "integer", "minimum": 1, "maximum": 86400 }
+              }
+            },
+            {
+              "type": "object",
+              "required": ["mode"],
+              "additionalProperties": false,
+              "properties": { "mode": { "const": "stopwatch" } }
+            },
+            {
+              "type": "object",
+              "required": ["mode", "sets", "workSec", "restSec"],
+              "additionalProperties": false,
+              "properties": {
+                "mode": { "const": "interval" },
+                "sets": { "type": "integer", "minimum": 1, "maximum": 99 },
+                "workSec": { "type": "integer", "minimum": 1, "maximum": 86400 },
+                "restSec": { "type": "integer", "minimum": 0, "maximum": 86400 }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "checklistWidget": {
+      "type": "object",
+      "required": ["type", "title", "config"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "checklist" },
+        "title": { "$ref": "#/$defs/title" },
+        "size": { "$ref": "#/$defs/size" },
+        "config": {
+          "type": "object",
+          "required": ["items"],
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 100,
+              "items": {
+                "oneOf": [
+                  { "type": "string", "minLength": 1, "maxLength": 200 },
+                  {
+                    "type": "object",
+                    "required": ["label"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "label": { "type": "string", "minLength": 1, "maxLength": 200 },
+                      "done": { "type": "boolean", "default": false }
+                    }
+                  }
+                ]
+              }
+            },
+            "resetDaily": {
+              "type": "boolean",
+              "default": true,
+              "description": "Décoche automatiquement tous les éléments chaque nouveau jour."
+            }
+          }
+        }
+      }
+    },
+    "calendarWidget": {
+      "type": "object",
+      "required": ["type", "title"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "calendar" },
+        "title": { "$ref": "#/$defs/title" },
+        "size": { "$ref": "#/$defs/size" },
+        "config": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "icsUrl": { "type": "string", "format": "uri" },
+            "nativeUrl": { "type": "string", "maxLength": 500 }
+          }
+        }
+      }
+    }
+  }
+}

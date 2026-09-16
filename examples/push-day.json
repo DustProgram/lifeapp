@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "routine": {
+    "name": "Push Day",
+    "icon": "💪",
+    "description": "Séance pectoraux / épaules / triceps (~60 min)"
+  },
+  "widgets": [
+    {
+      "type": "note",
+      "title": "Programme",
+      "size": "md",
+      "config": {
+        "markdown": "## Push Day\n\n| Exercice | Séries | Reps | Repos |\n|---|---|---|---|\n| Développé couché | 4 | 8 | 90 s |\n| Développé militaire | 4 | 10 | 90 s |\n| Dips | 3 | 12 | 60 s |\n| Élévations latérales | 3 | 15 | 45 s |\n\n> Échauffement obligatoire avant de charger."
+      }
+    },
+    {
+      "type": "timer",
+      "title": "Échauffement",
+      "size": "sm",
+      "config": { "mode": "countdown", "durationSec": 300 }
+    },
+    {
+      "type": "timer",
+      "title": "Développé couché",
+      "size": "sm",
+      "config": { "mode": "interval", "sets": 4, "workSec": 40, "restSec": 90 }
+    },
+    {
+      "type": "timer",
+      "title": "Développé militaire",
+      "size": "sm",
+      "config": { "mode": "interval", "sets": 4, "workSec": 40, "restSec": 90 }
+    },
+    {
+      "type": "timer",
+      "title": "Dips",
+      "size": "sm",
+      "config": { "mode": "interval", "sets": 3, "workSec": 45, "restSec": 60 }
+    },
+    {
+      "type": "timer",
+      "title": "Élévations latérales",
+      "size": "sm",
+      "config": { "mode": "interval", "sets": 3, "workSec": 40, "restSec": 45 }
+    },
+    {
+      "type": "checklist",
+      "title": "Fin de séance",
+      "size": "sm",
+      "config": {
+        "items": ["Étirements 5 min", "Shaker protéiné", "Noter les charges"],
+        "resetDaily": true
+      }
+    }
+  ]
+}

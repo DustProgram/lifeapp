@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+/* Dark mode piloté par la classe `.dark` sur <html> (toggle + préférence système). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f4f4f2;
+  --foreground: #17171a;
+  --card: #ffffff;
+  --card-2: #ececea;
+  --line: #17171a;
+  --line-soft: #d9d9d5;
+  --muted: #6b6b74;
+  --accent: #b8f531;
+  --accent-ink: #17171a;
+  --danger: #e5484d;
+}
+
+.dark {
+  --background: #0d0d0f;
+  --foreground: #f2f2f0;
+  --card: #17171a;
+  --card-2: #202024;
+  --line: #3a3a41;
+  --line-soft: #29292e;
+  --muted: #8f8f9a;
+  --accent: #c6f542;
+  --accent-ink: #101012;
+  --danger: #ff6369;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-2: var(--card-2);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ombre dure façon néo-brutalisme fonctionnel. */
+@utility shadow-brutal {
+  box-shadow: 4px 4px 0 0 var(--line);
+}
+@utility shadow-brutal-sm {
+  box-shadow: 2px 2px 0 0 var(--line);
+}
+
+/* Rendu Markdown des widgets Note. */
+.prose-note {
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+.prose-note h1,
+.prose-note h2,
+.prose-note h3 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0.9em 0 0.35em;
+}
+.prose-note h1 { font-size: 1.25rem; }
+.prose-note h2 { font-size: 1.1rem; }
+.prose-note h3 { font-size: 1rem; }
+.prose-note > :first-child { margin-top: 0; }
+.prose-note p { margin: 0.5em 0; }
+.prose-note ul,
+.prose-note ol {
+  margin: 0.5em 0;
+  padding-left: 1.25em;
+}
+.prose-note ul { list-style: square; }
+.prose-note ol { list-style: decimal; }
+.prose-note li { margin: 0.2em 0; }
+.prose-note a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose-note code {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.85em;
+  background: var(--card-2);
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+.prose-note pre {
+  background: var(--card-2);
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  padding: 0.75em;
+  overflow-x: auto;
+  margin: 0.6em 0;
+}
+.prose-note pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+.prose-note blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 0.75em;
+  color: var(--muted);
+  margin: 0.6em 0;
+}
+.prose-note hr {
+  border: none;
+  border-top: 1px solid var(--line-soft);
+  margin: 1em 0;
+}
+.prose-note table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.6em 0;
+  font-size: 0.85rem;
+}
+.prose-note th,
+.prose-note td {
+  border: 1px solid var(--line-soft);
+  padding: 0.3em 0.6em;
+  text-align: left;
+}
+.prose-note th {
+  background: var(--card-2);
+  font-weight: 700;
+}
+.prose-note input[type="checkbox"] {
+  accent-color: var(--accent);
+  margin-right: 0.35em;
+}
