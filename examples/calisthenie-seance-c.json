@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "routine": {
+    "name": "Séance C",
+    "icon": "🅾️",
+    "description": "Calisthénie — full body léger"
+  },
+  "widgets": [
+    {
+      "type": "note",
+      "title": "Programme",
+      "size": "md",
+      "config": {
+        "markdown": "## Séance C — Full body léger\n\n| Exercice | Séries × reps |\n|---|---|\n| Pompes inclinées | 3 × 8 |\n| Tirage australien | 3 × 8 |\n| Fentes | 3 × 10 par jambe |\n| Planche | 3 × 30 s |\n| Dead bug | 3 × 10 |"
+      }
+    },
+    {
+      "type": "timer",
+      "title": "Échauffement — 5 min",
+      "size": "sm",
+      "config": { "mode": "countdown", "durationSec": 300 }
+    },
+    {
+      "type": "checklist",
+      "title": "Pompes inclinées 3 × 8",
+      "size": "sm",
+      "config": { "items": ["Série 1", "Série 2", "Série 3"], "resetDaily": true }
+    },
+    {
+      "type": "checklist",
+      "title": "Tirage australien 3 × 8",
+      "size": "sm",
+      "config": { "items": ["Série 1", "Série 2", "Série 3"], "resetDaily": true }
+    },
+    {
+      "type": "checklist",
+      "title": "Fentes 3 × 10/jambe",
+      "size": "sm",
+      "config": { "items": ["Série 1", "Série 2", "Série 3"], "resetDaily": true }
+    },
+    {
+      "type": "timer",
+      "title": "Planche 3 × 30 s",
+      "size": "sm",
+      "config": { "mode": "interval", "sets": 3, "workSec": 30, "restSec": 45 }
+    },
+    {
+      "type": "checklist",
+      "title": "Dead bug 3 × 10",
+      "size": "sm",
+      "config": { "items": ["Série 1", "Série 2", "Série 3"], "resetDaily": true }
+    },
+    {
+      "type": "timer",
+      "title": "Étirements — 5 × 45 s",
+      "size": "sm",
+      "config": { "mode": "interval", "sets": 5, "workSec": 45, "restSec": 10 }
+    }
+  ]
+}

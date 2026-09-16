@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "routine": {
+    "name": "Quotidien 5 min",
+    "icon": "⚡",
+    "description": "Bloc quotidien — même les jours de repos"
+  },
+  "widgets": [
+    {
+      "type": "checklist",
+      "title": "Le bloc du jour",
+      "size": "sm",
+      "config": {
+        "items": [
+          "Planche 2 × 30 s",
+          "Dead bug × 10",
+          "Étirement ischios 30 s/côté",
+          "Étirement fléchisseurs 30 s/côté"
+        ],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "timer",
+      "title": "Planche 2 × 30 s",
+      "size": "sm",
+      "config": { "mode": "interval", "sets": 2, "workSec": 30, "restSec": 30 }
+    },
+    {
+      "type": "timer",
+      "title": "Étirements 4 × 30 s",
+      "size": "sm",
+      "config": { "mode": "interval", "sets": 4, "workSec": 30, "restSec": 5 }
+    },
+    {
+      "type": "calendar",
+      "title": "Aujourd'hui",
+      "size": "sm",
+      "config": {}
+    }
+  ]
+}

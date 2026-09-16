@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "routine": {
+    "name": "Soins",
+    "icon": "🧴",
+    "description": "Visage, rasage, cheveux — zéro poil incarné, zéro tache"
+  },
+  "widgets": [
+    {
+      "type": "checklist",
+      "title": "Visage — matin",
+      "size": "sm",
+      "config": {
+        "items": [
+          "Nettoyant doux (ou eau tiède)",
+          "Sérum acide hyaluronique sur peau humide",
+          "Crème hydratante",
+          "SPF 50 — 2 doigts, visage + cou"
+        ],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Visage — soir",
+      "size": "sm",
+      "config": {
+        "items": [
+          "Nettoyant doux",
+          "Sérum niacinamide 10 %",
+          "Aloe vera ou crème hydratante"
+        ],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "note",
+      "title": "Semaine type",
+      "size": "md",
+      "config": {
+        "markdown": "## Rythme\n\n| Quoi | Quand |\n|---|---|\n| Gommage enzyme grenade | 2×/sem le soir, **la veille du rasage** — jamais le jour même |\n| Rasage | tous les 2-3 jours max |\n| Lavage cheveux | mercredi + dimanche |\n| Niacinamide cuir chevelu | 2-3×/semaine |\n| Contours (lame T) | tous les 7-10 jours, jamais à zéro |\n\n> Démarrage : sem. 1 niacinamide un soir sur deux, 1 seul gommage. Sem. 2 : tous les soirs. Si ça tire : 3 soirs/sem."
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Rasage (tous les 2-3 j)",
+      "size": "sm",
+      "config": {
+        "items": [
+          "Peau tiède + huile jojoba/ricin",
+          "Sabot 1 mm, sens du poil, 1 passage",
+          "Eau froide",
+          "Aloe vera épais",
+          "Niacinamide (le soir) + crème"
+        ],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Cheveux (mer + dim)",
+      "size": "sm",
+      "config": {
+        "items": [
+          "Shampoing + protéines de riz",
+          "Après-shampoing kératine 3-5 min",
+          "Leave-in → crème bouclés → huile",
+          "Niacinamide cuir chevelu (massé)"
+        ],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "timer",
+      "title": "Pose après-shampoing",
+      "size": "sm",
+      "config": { "mode": "countdown", "durationSec": 240 }
+    },
+    {
+      "type": "checklist",
+      "title": "À acheter",
+      "size": "sm",
+      "config": {
+        "items": [
+          "Nettoyant visage doux",
+          "Crème hydratante CeraVe",
+          "SPF 50 Anthelios UVmune 400",
+          "Huile jojoba ou ricin",
+          "Gel douche surgras + karité",
+          "Tondeuse de finition lame T"
+        ],
+        "resetDaily": false
+      }
+    }
+  ]
+}

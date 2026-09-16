@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "routine": {
+    "name": "Séance A",
+    "icon": "🅰️",
+    "description": "Calisthénie — poussée et gainage (30-40 min)"
+  },
+  "widgets": [
+    {
+      "type": "note",
+      "title": "Programme",
+      "size": "md",
+      "config": {
+        "markdown": "## Séance A — Poussée et gainage\n\n| Exercice | Séries × reps |\n|---|---|\n| Pompes inclinées | 4 × 6-10 |\n| Dips sur chaise | 3 × 8 |\n| Pompes genoux au sol | 3 × max (−2 reps avant l'échec) |\n| Planche | 3 × 30 s |\n| Hollow hold | 3 × 20 s |\n\n> **Progression** : à 4 × 12 reps propres, on descend d'un cran — table → plan de travail → chaise → marche → sol.\n\n*Pompes : corps gainé en ligne. Dips : épaules basses, coudes vers l'arrière.*"
+      }
+    },
+    {
+      "type": "timer",
+      "title": "Échauffement — 5 min",
+      "size": "sm",
+      "config": { "mode": "countdown", "durationSec": 300 }
+    },
+    {
+      "type": "checklist",
+      "title": "Pompes inclinées 4 × 6-10",
+      "size": "sm",
+      "config": {
+        "items": ["Série 1", "Série 2", "Série 3", "Série 4"],
+        "resetDaily": true
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Dips sur chaise 3 × 8",
+      "size": "sm",
+      "config": { "items": ["Série 1", "Série 2", "Série 3"], "resetDaily": true }
+    },
+    {
+      "type": "checklist",
+      "title": "Pompes genoux 3 × max",
+      "size": "sm",
+      "config": { "items": ["Série 1", "Série 2", "Série 3"], "resetDaily": true }
+    },
+    {
+      "type": "timer",
+      "title": "Planche 3 × 30 s",
+      "size": "sm",
+      "config": { "mode": "interval", "sets": 3, "workSec": 30, "restSec": 45 }
+    },
+    {
+      "type": "timer",
+      "title": "Hollow hold 3 × 20 s",
+      "size": "sm",
+      "config": { "mode": "interval", "sets": 3, "workSec": 20, "restSec": 45 }
+    },
+    {
+      "type": "timer",
+      "title": "Étirements — 5 × 45 s",
+      "size": "sm",
+      "config": { "mode": "interval", "sets": 5, "workSec": 45, "restSec": 10 }
+    }
+  ]
+}
