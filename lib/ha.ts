@@ -1,14 +1,19 @@
 /**
  * Home Assistant credential check, server-side.
  *
- * Uses HA's `login_flow` API (the same one the official mobile apps use):
- *   1. POST /auth/login_flow            → flow_id
- *   2. POST /auth/login_flow/{flow_id}  → auth code (or MFA step)
- *   3. POST /auth/token                 → access token (proves the code is real)
+ * Two channels, tried in order when running as an add-on:
+ *
+ * 1. Supervisor auth API (`auth_api: true`): POST http://supervisor/auth —
+ *    validates username/password against the HA user database.
+ * 2. HA's `login_flow` API (the same one the official mobile apps use),
+ *    against HA_URL (defaults to the add-on-internal http://homeassistant:8123):
+ *      a. POST /auth/login_flow            → flow_id
+ *      b. POST /auth/login_flow/{flow_id}  → auth code (or MFA step)
+ *      c. POST /auth/token                 → access token (proves the code is real)
  *
  * The tokens are discarded: LifeOS only uses HA as an identity provider and
- * issues its own signed session cookie. Configure with HA_URL, e.g.
- * HA_URL=http://homeassistant.local:8123
+ * issues its own signed session cookie. Standalone (non add-on) deployments
+ * configure channel 2 with HA_URL, e.g. HA_URL=http://homeassistant.local:8123
  */
 
 export type HaLoginResult =
@@ -82,13 +87,11 @@ async function verifySupervisorAuth(
   }
 }
 
-export async function verifyHaCredentials(
+/** Channel 2: HA core login_flow (the official mobile-app login API). */
+async function verifyLoginFlow(
   username: string,
   password: string
 ): Promise<HaLoginResult> {
-  if (process.env.SUPERVISOR_TOKEN) {
-    return verifySupervisorAuth(username, password);
-  }
   const haUrl = process.env.HA_URL?.replace(/\/+$/, "");
   if (!haUrl) return { ok: false, reason: "not_configured" };
 
@@ -106,9 +109,14 @@ export async function verifyHaCredentials(
       }),
       signal: AbortSignal.timeout(10000),
     });
-    if (!flowRes.ok) return { ok: false, reason: "unreachable" };
+    console.log(`[lifeos-auth] login_flow init (${haUrl}) -> HTTP ${flowRes.status}`);
+    if (!flowRes.ok) {
+      return { ok: false, reason: "unreachable", detail: `login_flow init ${flowRes.status}` };
+    }
     const flow = (await flowRes.json()) as { flow_id?: string };
-    if (!flow.flow_id) return { ok: false, reason: "unreachable" };
+    if (!flow.flow_id) {
+      return { ok: false, reason: "unreachable", detail: "login_flow: pas de flow_id" };
+    }
 
     const stepRes = await fetch(`${haUrl}/auth/login_flow/${flow.flow_id}`, {
       method: "POST",
@@ -116,7 +124,10 @@ export async function verifyHaCredentials(
       body: JSON.stringify({ client_id: clientId, username, password }),
       signal: AbortSignal.timeout(10000),
     });
-    if (!stepRes.ok) return { ok: false, reason: "invalid_credentials" };
+    console.log(`[lifeos-auth] login_flow step -> HTTP ${stepRes.status}`);
+    if (!stepRes.ok) {
+      return { ok: false, reason: "invalid_credentials", detail: `login_flow ${stepRes.status}` };
+    }
     const step = (await stepRes.json()) as {
       type?: string;
       result?: string;
@@ -136,14 +147,36 @@ export async function verifyHaCredentials(
         }),
         signal: AbortSignal.timeout(10000),
       });
+      console.log(`[lifeos-auth] login_flow token -> HTTP ${tokenRes.status}`);
       return tokenRes.ok
         ? { ok: true }
-        : { ok: false, reason: "invalid_credentials" };
+        : { ok: false, reason: "invalid_credentials", detail: `token ${tokenRes.status}` };
     }
 
     if (step.step_id === "mfa") return { ok: false, reason: "mfa_required" };
-    return { ok: false, reason: "invalid_credentials" };
-  } catch {
-    return { ok: false, reason: "unreachable" };
+    console.log(
+      `[lifeos-auth] login_flow refusé : ${JSON.stringify(step.errors ?? step.step_id ?? step.type)}`
+    );
+    return { ok: false, reason: "invalid_credentials", detail: "login_flow: identifiants refusés" };
+  } catch (err) {
+    console.log(`[lifeos-auth] login_flow injoignable : ${String(err)}`);
+    return { ok: false, reason: "unreachable", detail: "login_flow fetch failed" };
   }
+}
+
+export async function verifyHaCredentials(
+  username: string,
+  password: string
+): Promise<HaLoginResult> {
+  if (process.env.SUPERVISOR_TOKEN) {
+    const sup = await verifySupervisorAuth(username, password);
+    if (sup.ok) return sup;
+    // Canal de secours : le login_flow du cœur HA via le réseau interne.
+    console.log("[lifeos-auth] canal Supervisor refusé, bascule sur login_flow");
+    const flow = await verifyLoginFlow(username, password);
+    if (flow.ok || flow.reason === "mfa_required") return flow;
+    // Erreur la plus parlante des deux.
+    return flow.reason === "not_configured" || flow.reason === "unreachable" ? sup : flow;
+  }
+  return verifyLoginFlow(username, password);
 }
